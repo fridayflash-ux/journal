@@ -1,0 +1,572 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Birthday Mosaic (Debug Player)</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
+
+  <style>
+    html, body { height:100%; margin:0; background:#0b0b0f; }
+    #osd { width:100%; height:100%; }
+
+    /* Debug overlay */
+    #dbg{
+      position: fixed;
+      left: 12px; top: 12px;
+      z-index: 50000;
+      max-width: min(720px, 92vw);
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(18,18,22,0.82);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      font: 12px/1.35 system-ui, Segoe UI, Arial;
+      backdrop-filter: blur(10px);
+      white-space: pre-wrap;
+    }
+#popText{
+  font-size: 13.5px;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+}
+    /* Hotspot */
+    .hs-wrap{ position: relative; overflow: visible; pointer-events:auto;  filter: drop-shadow(0 0 12px rgba(255,255,255,0.7));}
+    .hs-hit{
+      position:absolute;
+      inset:-18px;
+      background:transparent;
+      cursor:pointer;
+      pointer-events:auto;
+    }
+.hs-dot{
+  position:absolute;
+  left:50%; top:50%;
+  width:12px; height:12px;
+  transform:translate(-50%,-50%);
+  border-radius:999px;
+
+  /* 50% transparent white */
+  background: rgba(255,255,255,0.5);
+
+  backdrop-filter: blur(3px);
+
+  box-shadow:
+    0 0 10px rgba(255,255,255,0.8),
+    0 0 22px rgba(255,255,255,0.5);
+
+  outline: 1px solid rgba(255,255,255,0.6);
+  outline-offset: 2px;
+
+  pointer-events:none;
+}
+.hs-halo{
+  position:absolute;
+  left:50%; top:50%;
+  width:60px; height:60px;
+  transform:translate(-50%,-50%);
+  border-radius:999px;
+
+  border: 1px solid rgba(255,255,255,0.9);
+
+  box-shadow:
+    0 0 20px rgba(255,255,255,0.9),
+    0 0 40px rgba(255,255,255,0.6);
+
+  animation: haloBright 1.8s ease-out infinite;
+  pointer-events:none;
+}
+
+@keyframes haloBright{
+  0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.6); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(1.4); }
+}
+    @keyframes halo{
+      0%   { opacity: 0.0; transform: translate(-50%,-50%) scale(0.70); }
+      18%  { opacity: 0.85; }
+      100% { opacity: 0.0; transform: translate(-50%,-50%) scale(1.35); }
+    }
+
+    /* Popover */
+    #popover{
+      position: fixed;
+      z-index: 20000;
+      width: 380px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(18,18,22,0.92);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 18px 80px rgba(0,0,0,0.55);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      font-family: Inter, system-ui, Segoe UI, Arial, sans-serif;
+      display: none;
+    }
+    #popHeader{ padding: 12px 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    #popTitle{ font-size: 14px; font-weight: 650; margin-bottom: 6px; }
+    #popMeta{ font-size: 12px; opacity: 0.72; }
+    #popMedia{ height: 240px; background:#0b0b0f; display:flex; align-items:center; justify-content:center; }
+    #popMedia img{ width:100%; height:100%; object-fit:contain; }
+    #popBody{ padding: 12px 12px 14px; }
+    #popText{ font-size: 13px; line-height: 1.45; opacity: 0.92; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+
+<div id="osd"></div>
+
+<div id="dbg">Starting…</div>
+
+<div id="popover">
+  <div id="popHeader">
+    <div id="popTitle">TITLE</div>
+    <div id="popMeta">DATE • PLACE</div>
+  </div>
+  <div id="popMedia"><img id="popImg" alt=""></div>
+  <div id="popBody"><div id="popText">CAPTION</div></div>
+</div>
+
+<script>
+  const dbg = document.getElementById("dbg");
+  function log(msg){
+    dbg.textContent += "\\n" + msg;
+    console.log(msg);
+  }
+
+  // Show JS errors on screen
+  window.addEventListener("error", (e) => {
+    dbg.textContent += "\\n\\n❌ JS ERROR: " + (e.message || e.error);
+  });
+
+  // ===== Hotspots =====
+  const HOTSPOTS = [
+{ x: 0.357544, y: 0.179766, w: 0.005848, h: 0.005848,
+  tileX: 62,
+  tileY: 24,
+  title: "THE FIRST MOVIE",
+  date: "31-OCT-2025",
+  place: "HOYTS WESTPOINT",
+  text: `Every date of ours was unplanned — a spontaneous decision made in the moment — yet each one became something beautiful.
+
+It was never the place that mattered to us. It was the comfort of your hand in mine, the joy of being in each other’s company and the quiet magic of looking into each other’s eyes.
+
+Each moment leaves us wondering how blessed we are, grateful for every step of the past that led us here.
+
+Whether it was a monthversary we celebrated or a simple catch-up that blossomed into a date, every moment has been savoured with the same warmth, the same passion and the same intensity that kept us drawing closer.`,
+  image: "photos/MOVIE.jpg"
+},{
+  x: 0.328304,
+  y: 0.132982,
+  w: 0.005848,
+  h: 0.005848,
+  tileX: 56,
+  tileY: 22,
+  title: "DIWALI 2025",
+  date: "DATE",
+  place: "PLACE",
+  text: `Deepavali 2025 felt unforgettable because Anannya poured her whole heart into it.
+
+She filled every corner with light — from the front door to the backyard deck, from the living room to my own space — turning the house into something magical.
+
+And somewhere between the laughter and the quiet moments, I realised something simple and true:
+
+Anannya herself is the Deepavali of my life — the light, the warmth and the hope that glows effortlessly.`,
+  image: "photos/diwali1.jpg"
+},
+
+    { x: 0.351696, y: 0.138830, w: 0.005848, h: 0.005848, tileX: 60, tileY: 23, tilesW: 1, tilesH: 1,
+      title:"TEMPLE VISIT", date:"27 JAN 2026", place:"MURUGAN TEMPLE WESTMEAD", text:"SPECIALLY PLANNED TEMPLE VISIT ON A WORK DAY OFF", image:"photos/TEMPLE.JPEG" },
+
+    { x: 0.357544, y: 0.156374, w: 0.005848, h: 0.005848, tileX: 61, tileY: 26, tilesW: 1, tilesH: 1,
+      title:"KIDS SECOND VISIT", date:"17 JAN 2026", place:"KELLYVILLE", text:"PROOF THAT GOOD THINGS COME IN DIFFERENT SIZES", image:"photos/Abhi.jpeg" },
+
+    { x: 0.410175, y: 0.150526, w: 0.005848, h: 0.005848, tileX: 70, tileY: 25, tilesW: 1, tilesH: 1,
+      title:"THE FIRST DATE", date:"31-OCT-2025", place:"MEDMEX BLACKTOWN", text:"CHAPTER ONE THE PRE-MOVIE DINNER", image:"photos/31-OCT.jpg" },
+
+  {
+  x: 0.427719,
+  y: 0.127135,
+  w: 0.005848,
+  h: 0.005848,
+  tileX: 73,
+  tileY: 21,
+  tilesW: 1,
+  tilesH: 1,
+  title: "UNSCRIPTED MOMENT",
+  date: "10 OCT 2025",
+  place: "GOSFORD",
+  text: `On Indrani Di’s house warming day, a candid moment was frozen in time — capturing a look from Anannya that I’ll carry with me for a long, long time.
+
+In her soft, amused gaze, I found belonging. A quiet joy I never thought I’d feel again.
+
+This frame is proof that because of her, the world feels a little more mine.`,
+  image: "photos/IND.jpg"
+},
+{
+  x: 0.147018,
+  y: 0.273333,
+  w: 0.005848,
+  h: 0.005848,
+  tileX: 25,
+  tileY: 46,
+  tilesW: 1,
+  tilesH: 1,
+  title: "আমার ইচ্ছে…",
+  date: "17 Dec 2025",
+  place: "KELLYVILLE",
+  text: `ছোটবেলা থেকেই একখানা ছবি মনের দেয়ালে টাঙানো ছিল—সাদা শাড়ি, বেলি ফুলের মালা, আর একখানা নীরব হাসি। সানজিদা খাতুনের ছেলের বিয়েতে দেখেই সেই স্বপ্নের বীজ বোনা হয়েছিল। ভেবেছিলাম, একদিন আমিও সাদা শাড়ির সৌরভে, বেলি ফুলের গন্ধে নিজেকে ভরিয়ে নতুন জীবনের দুয়ার পেরোব—বুকভরা কাঁপা কাঁপা আনন্দ নিয়ে।
+
+জীবন কিন্তু কবিতার মতো সরল নয়। প্রথম জীবনে সেই স্বপ্ন অধরাই রয়ে গেল। অনেক চাওয়া ঝরে পড়ল, অনেক অপেক্ষা ক্লান্ত হলো। তবু মনের গভীরে একটুকরো ইচ্ছে নিভে যায়নি—নিভু নিভু আলো হয়ে সে শুধু অপেক্ষা করছিল, তার নিজের সময়ের জন্য।
+
+যা হারায়, তা হারায় না—
+মনের গোপন ঘরে সে থাকে,
+নীরব আশায় দিনের পর দিন
+নিজের ডাক শোনবার অপেক্ষায়।
+
+আর আজ, হঠাৎ করেই, সেই আলোর ডাকে সাড়া দিয়ে এলো আমার মানুষ—আমার ভালোবাসার মানুষ। জীবনের চাওয়া-উচ্ছ্বাস আজ আবার প্রথম জীবনের মতোই নবীন, কাঁচা রোদের মতো উজ্জ্বল।
+
+সংস্কৃতি ভিন্ন, ধর্ম ভিন্ন, ভাষা ভিন্ন—সবকিছু আলাদা। তবু আশ্চর্য এক অদৃশ্য সেতুতে আমাদের দুই হৃদয় মিলেছে।
+
+ভিন্ন ভিন্ন তটে দাঁড়িয়ে
+একই নদীর গান শুনেছি আমরা,
+ভাষা আলাদা, পথ আলাদা—
+তবু হৃদয়ের সুর এক হয়ে বেজেছে।
+
+শুনেছি, ওদের রীতিতে সাদা শাড়ির স্থান নেই। তাই আমার স্বপ্নটাও আজ একটু বদলে নিয়েছে রং—সাদা শাড়ির বুকে হলুদের আলতো ছোঁয়া। যেন দু’টি আলাদা পথ এসে এক জায়গায় মিশে গেল।
+
+এই মিলন কোনো নিয়ম মানে না,
+এই প্রেম রঙের সীমা চেনে না—
+স্বপ্ন আর সত্য মিলে আজ
+একটি গানেই বেঁধে দিল জীবন।
+
+আমার স্বপ্ন আর আমার পাওয়া—দুটো মিলিয়ে আজ একটাই গান। রবীন্দ্রনাথের ভাষায় বললে,
+
+“ভিন্ন পথে চলেও যাদের মিলন ঘটে,
+তারাই বুঝি সত্যিকার আপন।”`,
+  image: "photos/malle.jpg"
+},
+{
+  x: 0.129474, y: 0.168070, w: 0.005848, h: 0.005848,
+  tileX: 22, tileY: 28, tilesW: 1, tilesH: 1,
+  title: "A Tribute",
+  date: "Thursday 15 January 2026",
+  place: "Sydney",
+  text: `যিদও এই জীবেনর পেথ আপনার সে2 আমার সরাসির সা4াৎ ঘেটিন, তব9 আপনার :শ< আিম
+=িতিদন অন9ভব কির,আপনার গেড় Cতালা পিরবাের, তােদর আচরেণ, তােদর মGলHেবােধর নীরব
+দীিJেত। আপিন Cয আেলা Lািলেয় Cগেছন, তারই িকরণ আজ আমার জীবেনর পেথ এেস পেড়।
+সংPািQর এই প9ণH4েণ, নত9ন ফসেলর =তীক আর Sদেয়র =াথ<না হােত িনেয় আিম আপনােক
+Uরণ কির গভীর VWায়। Cয দXঢ় িভিZর ওপর আজ আমার আগামীর [\ দঁািড়েয় আেছ, Cসই
+িভিZর CনপথH িনম<াতা আপিন নীরব, অথচ িচর^ায়ী।`,
+  image: "photos/a10.jpeg"
+},
+
+{
+  x: 0.147018, y: 0.179766, w: 0.005848, h: 0.005848,
+  tileX: 25, tileY: 30, tilesW: 1, tilesH: 1,
+  title: "100 Days of Us",
+  date: "Sunday 11 January 2026",
+  place: "Sydney",
+  text: `একেশা িদেনর *িত,া – একেশা িদন -পিরেয় -গল।
+আজ কলম ধরলাম,
+সময়েক িহেসব করেত নয়
+:দেয়র কােছ জেম থাকা
+অব>? কথা@েলােক
+িনঃশেB -তামার কােছ -পৗDেছ িদেত। এই একেশা িদন
+আমার কােছ -কবল িদেনর পর িদন নয়,এ -যন এক অGলHন যাIা—
+-যখােন ধীের ধীের
+আিম িনেজেকই নতLন কের িচেনিছ।
+-তামার উপিOিতেত
+জীবন তার তাড়াQেড়া ভLেল
+িOর হেত িশেখেছ। আমরা পাশাপািশ -হঁেটিছ—
+কখেনা কথার আেলায়,
+কখেনা নীরবতার ছায়ায়।
+আর আUযV,
+এই নীরবতার মেধ>ই
+আিম ভােলাবাসার
+সবেচেয় গভীর ভাষা Xেনিছ।
+-তামারই`,
+  image: "photos/100.jpg"
+},
+
+{
+  x: 0.123626, y: 0.220702, w: 0.005848, h: 0.005848,
+  tileX: 21, tileY: 37, tilesW: 1, tilesH: 1,
+  title: "A Rain-Soaked Diary",
+  date: "Tuesday 20 January 2026",
+  place: "Sydney",
+  text: `এক#ট ব&'(েভজা ডােয়ির
+আজ আকাশ সারািদন নীরব।
+.মেঘরা জেম িছল, ব456 নামল ধীের—.যন 9ক4িত জােন, িকছ; কথা শে= বলা যায় না।
+আিম IাJ, আিম িবষd,
+তব; আেলা আসেব..এই িবeাসটাই জীবন।`,
+  image: "photos/a1.jpg"
+},
+
+{
+  x: 0.147018, y: 0.255789, w: 0.005848, h: 0.005848,
+  tileX: 25, tileY: 43, tilesW: 1, tilesH: 1,
+  title: "A Promise, Quiet and True",
+  date: "Wednesday 21 January 2026",
+  place: "Sydney",
+  text: `!া# $দেয়র নত+ন ,ভার
+এই স$দ&র (বােসর আকােশর িনেচ
+আজ 3তামােক িলখিছ…….
+নীরব সাহেস,
+িlর ভােলাবাসায়।`,
+  image: "photos/a2.jpg"
+},
+
+{
+  x: 0.187953, y: 0.285029, w: 0.005848, h: 0.005848,
+  tileX: 32, tileY: 48, tilesW: 1, tilesH: 1,
+  title: "Glass-Walled Office Day",
+  date: "Friday 6 February 2026",
+  place: "Sydney",
+  text: `আজ অিফেসর কাচেঘরা ঘেরর িভতর বেস আিছ, অথচ মন এখােন 6নই।
+আর 6সই আকােশর িনেচই, নীরেব নীরেব, জীবেনর গান বাজেত থােক।`,
+  image: "photos/a3.jpeg"
+},
+
+{
+  x: 0.304912, y: 0.337661, w: 0.005848, h: 0.005848,
+  tileX: 52, tileY: 57, tilesW: 1, tilesH: 1,
+  title: "Weekend: Country in the Kitchen",
+  date: "Sunday 8 February 2026",
+  place: "Sydney",
+  text: `িবেদেশর ব'()েত +দেশর গ-….
+আজ উইেক'।
+রাYার উpতায়, বাগােনর মা[টর গেs, আর মান+েষর জনQ করা এক নীরব ভােলাবাসায়।`,
+  image: "photos/a4.jpg"
+},
+
+{
+  x: 0.199649, y: 0.296725, w: 0.005848, h: 0.005848,
+  tileX: 34, tileY: 50, tilesW: 1, tilesH: 1,
+  title: "Life’s Winding Light",
+  date: "Wednesday 11 February 2026",
+  place: "Sydney",
+  text: `বঁােকবঁােক জীবেনর আেলাকযা-া
+আজ ডােয়িরর পাতায় িলিখ….
+আিম জননী..
+আিম কমAযাNী..
+আিম সংcােমর মােঝই খBঁেজ 2পেয়িছ আমার মিহমা।`,
+  image: "photos/a5.jpeg"
+},
+
+{
+  x: 0.176257, y: 0.209006, w: 0.005848, h: 0.005848,
+  tileX: 30, tileY: 35, tilesW: 1, tilesH: 1,
+  title: "Valentine Letter",
+  date: "Saturday 14 February 2026",
+  place: "Sydney",
+  text: `Dear Jaan,
+I am not a great writer, nor do I always know how to arrange beautiful words...
+Happy Valentines day
+Forever yours.`,
+  image: "photos/v1.jpg"
+},
+
+{
+  x: 0.164561, y: 0.267485, w: 0.005848, h: 0.005848,
+  tileX: 28, tileY: 45, tilesW: 1, tilesH: 1,
+  title: "Love Day Diary",
+  date: "Sunday 15 February 2026",
+  place: "Sydney",
+  text: `১৪ই $ফ&য়াির, গভীর রাি.।
+আর $সই িচর?েনর নাম
+তDিম, oীকা?।`,
+  image: "photos/v2.jpeg"
+},
+
+{
+  x: 0.106082, y: 0.185614, w: 0.005848, h: 0.005848,
+  tileX: 18, tileY: 31, tilesW: 1, tilesH: 1,
+  title: "Shelter in the Dark",
+  date: "Thursday 19 February 2026",
+  place: "Sydney",
+  text: `অ"কােরর মােঝ আ*য় এবং মেনর দীি3…..
+মান&েষর অ0েরর 3মঘ একিদন 3কেট যাক।`,
+  image: "photos/a6.jpeg"
+},
+{
+  x: 0.451111, y: 0.115439, w: 0.005848, h: 0.005848,
+  tileX: 77, tileY: 19, tilesW: 1, tilesH: 1,
+  title: "GRACE IN EVERY THREAD",
+  date: "2025",
+  place: "SYDNEY",
+  text: `I used to believe that women of such grace and depth — the ones who soothed the weary hearts of poets — lived only in imagination.
+
+Then came Anannya, real and luminous, stepping out of the pages of a dream to offer a sense of belonging I never thought I’d find again.
+
+She is the muse the painters missed, and the quiet joy I finally know how to hold.`,
+  image: "photos/a7a.jpeg"
+},
+
+{
+  x: 0.451111, y: 0.144678, w: 0.005848, h: 0.005848,
+  tileX: 77, tileY: 24, tilesW: 1, tilesH: 1,
+  title: "A DESIGNERS EYE",
+  date: "OCT 2025",
+  place: "SYDNEY",
+  text: `From the smallest gifts to the biggest gatherings, Anannya brings a designer’s eye and a heart full of love to everything she touches.
+
+She turns ordinary life into something aesthetic and unique, proving that beauty is found in the details.
+
+Life just feels a little more beautiful when she’s behind the design.`,
+  image: "photos/F.jpg"
+},
+
+{
+  x: 0.369240, y: 0.150526, w: 0.005848, h: 0.005848,
+  tileX: 63, tileY: 25, tilesW: 1, tilesH: 1,
+  title: "A BIRTHDAY TO REMEMBER",
+  date: "26 OCT 2025",
+  place: "KELLYVILLE",
+  text: `From a basket of shirts to a cake cut exactly at midnight, Anannya’s birthday planning was a masterclass in personal and romantic gestures.
+
+She has a rare gift for making the ordinary feel extraordinary through her care and devotion.
+
+This day was proof that the best gifts aren't just things, but the feeling of being truly cherished.`,
+  image: "photos/v3.jpeg"
+},
+
+{
+  x: 0.345848, y: 0.127135, w: 0.005848, h: 0.005848,
+  tileX: 59, tileY: 21, tilesW: 1, tilesH: 1,
+  title: "FASHION DIVA",
+  date: "2026",
+  place: "SYDNEY",
+  text: `A true fashion diva, Anannya turns every outfit into a statement through her thoughtful choices and natural elegance.
+
+From vibrant traditional wear to simple modern silhouettes, she wears everything with a grace that makes the colors bloom a little brighter.
+
+She reminds us all just how powerful a signature style can be.`,
+  image: "photos/G2.jpg"
+},
+
+{ x: 0.345848, y: 0.103743, w: 0.005848, h: 0.005848,
+  tileX: 49, tileY: 66, tilesW: 1, tilesH: 1,
+  title: "ANANNYA OWNS COLOUR RED", date: "FEB 2025", place: "KELLYVILLE", text: 'Anannya can pull off any palette, but red is her true soulmate. Saree or suit, simple or grand—if it’s red, it’s hers', image: "photos/RED.jpg" },
+{
+  x: 0.386784, y: 0.226550, w: 0.005848, h: 0.005848,
+  tileX: 66, tileY: 38, tilesW: 1, tilesH: 1,
+  title: "আইবুরোভাত",
+  date: "21 FEB 2026",
+  place: "HORNSBY",
+  text: `Celebrating the last grand feast of single life!
+
+Anannya enjoying the traditions and delicious sweets at her friend’s daughter’s আইবুড়োভাত.`,
+  image: "photos/g1.jpg"
+},
+
+{
+  x: 0.380936, y: 0.255789, w: 0.005848, h: 0.005848,
+  tileX: 65, tileY: 43, tilesW: 1, tilesH: 1,
+  title: "XMAS CRUISE",
+  date: "23 DEC 2025",
+  place: "DARLING HARBOUR",
+  text: `Enjoying a magical Xmas cruise in Sydney Harbour — sailing into the holiday spirit with the best views in the city!`,
+  image: "photos/Xmas.jpeg"
+}
+];
+  // ===== Popover =====
+  const pop = document.getElementById("popover");
+  const popTitle = document.getElementById("popTitle");
+  const popMeta  = document.getElementById("popMeta");
+  const popText  = document.getElementById("popText");
+  const popImg   = document.getElementById("popImg");
+  let closeTimer = null;
+
+  function positionPopover(evt){
+    const pad = 14;
+    const w = pop.offsetWidth || 380;
+    const h = pop.offsetHeight || 520;
+    let x = evt.clientX + pad;
+    let y = evt.clientY + pad;
+    const maxX = window.innerWidth - w - 10;
+    const maxY = window.innerHeight - h - 10;
+    if (x > maxX) x = evt.clientX - w - pad;
+    if (y > maxY) y = evt.clientY - h - pad;
+    pop.style.left = Math.max(10, x) + "px";
+    pop.style.top  = Math.max(10, y) + "px";
+  }
+
+  function openPopover(h, evt){
+    popTitle.textContent = h.title || "";
+    popMeta.textContent  = [h.date, h.place].filter(Boolean).join(" • ");
+    popText.textContent  = h.text || "";
+    popImg.src           = h.image || "";
+    pop.style.display    = "block";
+    positionPopover(evt);
+  }
+
+  function scheduleClose(){
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(() => pop.style.display = "none", 160);
+  }
+  function cancelClose(){ clearTimeout(closeTimer); }
+  pop.addEventListener("mouseenter", cancelClose);
+  pop.addEventListener("mouseleave", scheduleClose);
+
+  // ===== Viewer =====
+  log("Creating OpenSeadragon viewer…");
+
+  const viewer = OpenSeadragon({
+    id: "osd",
+    prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
+    tileSources: "mosaic_4275.dzi?v=dbg1",  // <-- must exist!
+    showNavigator: true,
+    animationTime: 0.6,
+    blendTime: 0.12,
+    zoomPerScroll: 1.25,
+    maxZoomPixelRatio: 2.3,
+    preserveViewport: false,
+    gestureSettingsMouse: { scrollToZoom:true, clickToZoom:false, dblClickToZoom:false }
+  });
+
+  viewer.addHandler("open", () => {
+    log("✅ DZI opened successfully.");
+    viewer.viewport.goHome(true);
+    viewer.viewport.applyConstraints(true);
+
+    HOTSPOTS.forEach(addHotspot);
+
+    log("✅ Hotspots added: " + HOTSPOTS.length);
+  });
+
+  viewer.addHandler("open-failed", (e) => {
+    log("❌ DZI open failed. Check filename/path. Details: " + (e.message || JSON.stringify(e)));
+  });
+
+  function addHotspot(h){
+    const wrap = document.createElement("div");
+    wrap.className = "hs-wrap";
+
+    const halo = document.createElement("div");
+    halo.className = "hs-halo";
+    wrap.appendChild(halo);
+
+    const dot = document.createElement("div");
+    dot.className = "hs-dot";
+    wrap.appendChild(dot);
+
+    const hit = document.createElement("div");
+    hit.className = "hs-hit";
+    wrap.appendChild(hit);
+
+    hit.addEventListener("mouseenter", (e) => { cancelClose(); openPopover(h, e); });
+    hit.addEventListener("mousemove",  (e) => { if(pop.style.display === "block") positionPopover(e); });
+    hit.addEventListener("mouseleave", scheduleClose);
+    hit.addEventListener("click",      (e) => { cancelClose(); openPopover(h, e); });
+
+    const rect = new OpenSeadragon.Rect(h.x - h.w/2, h.y - h.h/2, h.w, h.h);
+    viewer.addOverlay({ element: wrap, location: rect });
+  }
+
+  log("If you see only 'Creating viewer…' and nothing else, DZI is not loading or JS errored.");
+</script>
+
+</body>
+</html>

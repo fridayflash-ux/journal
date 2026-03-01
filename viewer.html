@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Birthday Deep Zoom (Grid Hotspot Picker)</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
+
+  <style>
+    html, body { height:100%; margin:0; background:#0f0f12; }
+    #osd { width:100%; height:100%; }
+  </style>
+</head>
+<body>
+
+<div id="osd"></div>
+
+<script>
+  // ===== CONFIG =====
+  const TILE_PX = 25;              // confirmed
+  const GRID_TILES = 171;          // safe grid
+  const SAFE_PX = 4275 
+
+  // Default rect size (tiles)
+  let tilesW = 3;
+  let tilesH = 3;
+  let pickerEnabled = true;
+
+  const viewer = OpenSeadragon({
+    id: "osd",
+    prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
+tileSources: "mosaic_4275.dzi?v=1",    showNavigator: true,
+    animationTime: 0.8,
+    blendTime: 0.12,
+    maxZoomPixelRatio: 4,
+    gestureSettingsMouse: {
+      scrollToZoom: true,
+      clickToZoom: false,
+      dblClickToZoom: true
+    }
+  });
+
+  // ===== Toast =====
+  const toast = document.createElement("div");
+  Object.assign(toast.style, {
+    position: "fixed",
+    left: "16px",
+    bottom: "16px",
+    padding: "10px 12px",
+    borderRadius: "14px",
+    background: "rgba(255,250,240,0.92)",
+    backdropFilter: "blur(10px)",
+    boxShadow: "0 12px 40px rgba(0,0,0,0.35)",
+    color: "#2e2e2e",
+    fontFamily: "Inter, system-ui, Segoe UI, Arial, sans-serif",
+    fontSize: "13px",
+    lineHeight: "1.35",
+    zIndex: 9999,
+    maxWidth: "560px",
+    display: "none"
+  });
+  document.body.appendChild(toast);
+
+  function showToast(html, ms = 2400) {
+    toast.innerHTML = html;
+    toast.style.display = "block";
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => (toast.style.display = "none"), ms);
+  }
+
+  // ===== Toggle button =====
+  const btn = document.createElement("button");
+  Object.assign(btn.style, {
+    position: "fixed",
+    right: "16px",
+    bottom: "16px",
+    padding: "10px 14px",
+    borderRadius: "999px",
+    border: "1px solid rgba(198,168,90,0.55)",
+    background: "rgba(15,15,18,0.62)",
+    backdropFilter: "blur(10px)",
+    color: "white",
+    cursor: "pointer",
+    fontFamily: "Inter, system-ui, Segoe UI, Arial, sans-serif",
+    fontSize: "13px",
+    zIndex: 9999,
+    boxShadow: "0 12px 40px rgba(0,0,0,0.35)"
+  });
+  document.body.appendChild(btn);
+
+  function updateBtn() {
+    btn.textContent = `Picker: ${pickerEnabled ? "ON" : "OFF"}  |  Rect: ${tilesW}×${tilesH} tiles`;
+  }
+  updateBtn();
+
+  btn.addEventListener("click", () => {
+    pickerEnabled = !pickerEnabled;
+    updateBtn();
+    showToast(pickerEnabled ? "Picker enabled." : "Picker disabled.");
+  });
+
+  // ===== Marker =====
+  function makeRectMarker() {
+    const m = document.createElement("div");
+    m.style.width = "100%";
+    m.style.height = "100%";
+    m.style.borderRadius = "6px";
+    m.style.background = "rgba(198,168,90,0.10)";
+    m.style.border = "1px solid rgba(198,168,90,0.95)";
+    m.style.boxSizing = "border-box";
+    m.style.boxShadow = "0 0 14px rgba(198,168,90,0.18)";
+    return m;
+  }
+
+  // ===== Click to pick (uses WORLD ITEM conversion to avoid half-tile offsets) =====
+  viewer.addHandler("canvas-click", (event) => {
+    if (!pickerEnabled) return;
+    event.preventDefaultAction = true;
+
+    const item = viewer.world.getItemAt(0);
+    if (!item) return;
+
+    // Get image pixel coords from click
+    const imgPt = item.viewportToImageCoordinates(
+      viewer.viewport.pointFromPixel(event.position)
+    );
+
+    // Clamp inside safe area
+    const clampedX = Math.max(0, Math.min(SAFE_PX - 1, imgPt.x));
+    const clampedY = Math.max(0, Math.min(SAFE_PX - 1, imgPt.y));
+
+    // Snap to grid (top-left tile)
+let tileX = Math.floor((clampedX + TILE_PX / 2) / TILE_PX);
+let tileY = Math.floor((clampedY + TILE_PX / 2) / TILE_PX);
+
+    // Clamp so selection stays inside safe grid
+    tileX = Math.max(0, Math.min(GRID_TILES - tilesW, tileX));
+    tileY = Math.max(0, Math.min(GRID_TILES - tilesH, tileY));
+
+    // Pixel rect
+const OFFSET_X = -9;   // move right
+const OFFSET_Y = 6;   // move up
+
+const pxX = tileX * TILE_PX + OFFSET_X;
+const pxY = tileY * TILE_PX + OFFSET_Y;
+    const pxW = tilesW * TILE_PX;
+    const pxH = tilesH * TILE_PX;
+
+    // Convert IMAGE px rect -> VIEWPORT rect (correct)
+    const vRect = item.imageToViewportRectangle(pxX, pxY, pxW, pxH);
+
+    // Overlay
+    const marker = makeRectMarker();
+    viewer.addOverlay({ element: marker, location: vRect });
+
+    // Snippet (tile-based + viewport center)
+    const centerV = item.imageToViewportCoordinates(pxX + pxW/2, pxY + pxH/2);
+    const vW = item.imageToViewportCoordinates(pxW, 0).x - item.imageToViewportCoordinates(0, 0).x;
+    const vH = item.imageToViewportCoordinates(0, pxH).y - item.imageToViewportCoordinates(0, 0).y;
+
+    const snippet =
+`{ x: ${centerV.x.toFixed(6)}, y: ${centerV.y.toFixed(6)}, w: ${vW.toFixed(6)}, h: ${vH.toFixed(6)},
+  tileX: ${tileX}, tileY: ${tileY}, tilesW: ${tilesW}, tilesH: ${tilesH},
+  title: "TITLE", date: "DATE", place: "PLACE", text: "CAPTION", image: "photos/FILE.jpg" }`;
+
+    console.log("SNAPPED HOTSPOT:", snippet);
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(snippet).catch(()=>{});
+
+    showToast(
+      `<strong>Snapped</strong> tile (${tileX}, ${tileY})<br>
+       Rect: ${tilesW}×${tilesH} tiles (${pxW}×${pxH}px)<br>
+       <span style="opacity:.75">Snippet copied (if permitted). Also in Console.</span>`
+    );
+  });
+
+  // ===== Keyboard shortcuts =====
+  document.addEventListener("keydown", (e) => {
+    const k = e.key;
+
+    if (k.toLowerCase() === "p") btn.click();
+    if (k.toLowerCase() === "c") { viewer.clearOverlays(); showToast("Cleared markers."); }
+
+    // Presets
+    if (k === "1") { tilesW = 1; tilesH = 1; updateBtn(); showToast("Preset: 1×1 tile"); }
+    if (k === "2") { tilesW = 2; tilesH = 2; updateBtn(); showToast("Preset: 2×2 tiles"); }
+    if (k === "3") { tilesW = 3; tilesH = 3; updateBtn(); showToast("Preset: 3×3 tiles"); }
+    if (k === "4") { tilesW = 4; tilesH = 4; updateBtn(); showToast("Preset: 4×4 tiles"); }
+    if (k === "5") { tilesW = 5; tilesH = 5; updateBtn(); showToast("Preset: 5×5 tiles"); }
+
+    // Fine tune
+    if (k === "[") { tilesW = Math.max(1, tilesW - 1); updateBtn(); }
+    if (k === "]") { tilesW = Math.min(12, tilesW + 1); updateBtn(); }
+    if (k === "-") { tilesH = Math.max(1, tilesH - 1); updateBtn(); }
+    if (k === "=") { tilesH = Math.min(12, tilesH + 1); updateBtn(); }
+  });
+
+  viewer.addHandler("open", () => {
+    showToast("Picker ON. Keys: 1..5 presets, C clear, P toggle.", 4200);
+  });
+</script>
+
+</body>
+</html>
