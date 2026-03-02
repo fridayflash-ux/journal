@@ -58,29 +58,90 @@
       15%  { opacity: 1; }
       100% { opacity: 0; transform: translate(-50%,-50%) scale(1.4); }
     }
-/* ===== Artistic Hotspots ===== */
 
-.hs-art .hs-dot{
-  background: rgba(255, 215, 160, 0.6);
-  box-shadow:
-    0 0 14px rgba(255, 200, 140, 0.9),
-    0 0 30px rgba(255, 180, 120, 0.5);
-  outline: 1px solid rgba(255, 215, 160, 0.7);
-}
+    /* ===== Artistic Hotspots (warm gold) ===== */
+    .hs-art .hs-dot{
+      background: rgba(255, 215, 160, 0.6);
+      box-shadow:
+        0 0 14px rgba(255, 200, 140, 0.9),
+        0 0 30px rgba(255, 180, 120, 0.5);
+      outline: 1px solid rgba(255, 215, 160, 0.7);
+    }
+    .hs-art .hs-halo{
+      border: 1px solid rgba(255, 210, 150, 0.9);
+      box-shadow:
+        0 0 30px rgba(255, 200, 140, 0.8),
+        0 0 60px rgba(255, 180, 120, 0.4);
+      animation: haloSoft 3.5s ease-in-out infinite;
+    }
+    @keyframes haloSoft{
+      0%   { opacity: 0.2; transform: translate(-50%,-50%) scale(0.9); }
+      50%  { opacity: 0.9; transform: translate(-50%,-50%) scale(1.1); }
+      100% { opacity: 0.2; transform: translate(-50%,-50%) scale(0.9); }
+    }
 
-.hs-art .hs-halo{
-  border: 1px solid rgba(255, 210, 150, 0.9);
-  box-shadow:
-    0 0 30px rgba(255, 200, 140, 0.8),
-    0 0 60px rgba(255, 180, 120, 0.4);
-  animation: haloSoft 3.5s ease-in-out infinite;
-}
+    /* ===== Video Hotspots (cinematic blue) ===== */
+    .hs-video .hs-dot{
+      background: rgba(120, 190, 255, 0.55);
+      box-shadow:
+        0 0 14px rgba(120, 190, 255, 0.9),
+        0 0 34px rgba(80, 160, 255, 0.55);
+      outline: 1px solid rgba(150, 210, 255, 0.75);
+    }
+    .hs-video .hs-halo{
+      border: 1px solid rgba(150, 210, 255, 0.95);
+      box-shadow:
+        0 0 26px rgba(120, 190, 255, 0.95),
+        0 0 60px rgba(80, 160, 255, 0.55);
+      animation: haloCine 2.4s ease-in-out infinite;
+    }
+    @keyframes haloCine{
+      0%   { opacity: 0.15; transform: translate(-50%,-50%) scale(0.85); }
+      50%  { opacity: 0.95; transform: translate(-50%,-50%) scale(1.25); }
+      100% { opacity: 0.15; transform: translate(-50%,-50%) scale(0.85); }
+    }
 
-@keyframes haloSoft{
-  0%   { opacity: 0.2; transform: translate(-50%,-50%) scale(0.9); }
-  50%  { opacity: 0.9; transform: translate(-50%,-50%) scale(1.1); }
-  100% { opacity: 0.2; transform: translate(-50%,-50%) scale(0.9); }
-}
+    /* ===== Diary/Letter Hotspots (soft lavender) ===== */
+    .hs-diary .hs-dot{
+      background: rgba(205, 170, 255, 0.55);
+      box-shadow:
+        0 0 14px rgba(210, 180, 255, 0.85),
+        0 0 34px rgba(190, 150, 255, 0.45);
+      outline: 1px solid rgba(230, 210, 255, 0.7);
+    }
+    .hs-diary .hs-halo{
+      border: 1px solid rgba(230, 210, 255, 0.9);
+      box-shadow:
+        0 0 22px rgba(210, 180, 255, 0.8),
+        0 0 56px rgba(190, 150, 255, 0.4);
+      animation: haloLav 3.0s ease-in-out infinite;
+    }
+    @keyframes haloLav{
+      0%   { opacity: 0.18; transform: translate(-50%,-50%) scale(0.9); }
+      55%  { opacity: 0.85; transform: translate(-50%,-50%) scale(1.18); }
+      100% { opacity: 0.18; transform: translate(-50%,-50%) scale(0.9); }
+    }
+
+    /* ===== Constellation Mode (all art shimmer at once) ===== */
+    body.constellation .hs-art{
+      filter: drop-shadow(0 0 16px rgba(255, 220, 170, 0.8));
+    }
+    body.constellation .hs-art .hs-dot{
+      animation: twinkle 1.4s ease-in-out infinite;
+    }
+    body.constellation .hs-art .hs-halo{
+      animation: haloSoft 2.8s ease-in-out infinite, shimmer 1.6s linear infinite;
+    }
+    @keyframes twinkle{
+      0%, 100% { opacity: 0.55; transform: translate(-50%,-50%) scale(1); }
+      50%      { opacity: 1;    transform: translate(-50%,-50%) scale(1.15); }
+    }
+    @keyframes shimmer{
+      0%   { filter: brightness(1); }
+      50%  { filter: brightness(1.25); }
+      100% { filter: brightness(1); }
+    }
+
     /* Popover */
     #popover{
       position: fixed;
@@ -96,11 +157,22 @@
       font-family: Inter, system-ui, Segoe UI, Arial, sans-serif;
       display: none;
     }
-    #popHeader{ padding: 12px 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    #popHeader{
+      position:relative;
+      padding: 12px 12px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
     #popTitle{ font-size: 14px; font-weight: 650; margin-bottom: 6px; }
     #popMeta{ font-size: 12px; opacity: 0.72; }
-    #popMedia{ height: 240px; background:#0b0b0f; display:flex; align-items:center; justify-content:center; }
-    #popMedia img{ width:100%; height:100%; object-fit:contain; }
+    #popMedia{
+      height: 240px;
+      background:#0b0b0f;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor: pointer;
+    }
+    #popMedia img, #popMedia video{ width:100%; height:100%; object-fit:contain; }
     #popBody{ padding: 12px 12px 14px; }
     #popText{
       font-size: 13.5px;
@@ -110,6 +182,15 @@
       white-space: pre-wrap;
       max-height: 220px;
       overflow:auto;
+    }
+    #popClose{
+      position:absolute; right:10px; top:10px;
+      width:32px; height:32px; border-radius:10px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color:#fff; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      line-height: 1;
     }
   </style>
 </head>
@@ -121,6 +202,7 @@
   <div id="popHeader">
     <div id="popTitle">TITLE</div>
     <div id="popMeta">DATE • PLACE</div>
+    <button id="popClose" aria-label="Close">✕</button>
   </div>
   <div id="popMedia"><img id="popImg" alt=""></div>
   <div id="popBody"><div id="popText">CAPTION</div></div>
@@ -128,477 +210,186 @@
 
 <script>
   // ===== Hotspots (IMPORTANT: use backticks for text) =====
-const HOTSPOTS = [
+  const HOTSPOTS = [
 
-  {
-  x: 0.246433, y: 0.361053, w: 0.005848, h: 0.005848,
-  tileX: 42, tileY: 61, tilesW: 1, tilesH: 1,
-  title: "Sketch of Anannya",
-  date: "26 Oct 2025",
-  place: "Kellyville",
-  text: "A sketch seeking to capture the quiet depth in Anannya’s gaze.",
-  image: "photos/sketch.jpg",
-  type: "art"   // ⭐ important
-},
-  { x: 0.246433, y: 0.361053, w: 0.005848, h: 0.005848,
-  tileX: 42, tileY: 61, tilesW: 1, tilesH: 1,
-  title: "Sketch of Anannya", date: "26 Oct 2025", place: "Kellyville", text: "A sketch attempting to capture the depth of Anannya’s gaze.", image: "photos/sketch.jpg" },
-  
-  {
-  x: 0.252281, y: 0.366901, w: 0.005848, h: 0.005848,
-  tileX: 43, tileY: 62, tilesW: 1, tilesH: 1,
-  title: "Photo Story (Flipbook)",
-  date: "Oct - Dec 2025",
-  place: "Sydney",
-  text: "Open the flipbook",
-  image: "photos/thumb1.jpg",
-  link: "https://heyzine.com/flip-book/7a033139f3.html"
-},
+    {
+      x: 0.246433, y: 0.361053, w: 0.005848, h: 0.005848,
+      tileX: 42, tileY: 61, tilesW: 1, tilesH: 1,
+      title: "Sketch of Anannya",
+      date: "26 Oct 2025",
+      place: "Kellyville",
+      text: "A sketch seeking to capture the quiet depth in Anannya’s gaze.",
+      image: "photos/sketch.jpg",
+      type: "art"
+    },
 
-{
-  x: 0.252281, y: 0.372749, w: 0.005848, h: 0.005848,
-  tileX: 43, tileY: 63, tilesW: 1, tilesH: 1,
-  title: "125 Days (Video)",
-  date: "Jan 2026",
-  place: "Sydney",
-  text: "Play video",
-  image: "photos/thumb2.jpg",
-  link: "https://drive.google.com/file/d/1jbCpECX_rSUKmljjciyboQgUGohf-14j/view?usp=sharing"
-},
+    {
+      x: 0.252281, y: 0.366901, w: 0.005848, h: 0.005848,
+      tileX: 43, tileY: 62, tilesW: 1, tilesH: 1,
+      title: "Photo Story (Flipbook)",
+      date: "Oct - Dec 2025",
+      place: "Sydney",
+      text: "Open the flipbook",
+      image: "photos/thumb1.jpg",
+      link: "https://heyzine.com/flip-book/7a033139f3.html",
+      type: "art"
+    },
 
-{
-  x: 0.252281, y: 0.378596, w: 0.005848, h: 0.005848,
-  tileX: 43, tileY: 64, tilesW: 1, tilesH: 1,
-  title: "Peace like Bonolatha Sen (Video)",
-  date: "Nov 2025",
-  place: "Sydney",
-  text: "Play video",
-  image: "photos/thumb3.jpg",
-  link: "https://drive.google.com/file/d/1jPKitVxOo7ecJnBVBlaGRu4WYBS9gARK/view?usp=sharing"
-},
+    {
+      x: 0.252281, y: 0.372749, w: 0.005848, h: 0.005848,
+      tileX: 43, tileY: 63, tilesW: 1, tilesH: 1,
+      title: "125 Days (Video)",
+      date: "Jan 2026",
+      place: "Sydney",
+      text: "Play video",
+      image: "photos/thumb2.jpg",
+      link: "https://drive.google.com/file/d/1jbCpECX_rSUKmljjciyboQgUGohf-14j/view?usp=sharing",
+      type: "video"
+    },
 
-{
-  x: 0.246433, y: 0.384444, w: 0.005848, h: 0.005848,
-  tileX: 42, tileY: 65, tilesW: 1, tilesH: 1,
-  title: "X-mas Cruise (Video)",
-  date: "Dec 2025",
-  place: "Sydney",
-  text: "Play video",
-  image: "photos/thumb4.jpg",
-  link: "https://drive.google.com/file/d/1SjboR1h1CsfPi7iLww7Dqqg9QDDw1iBP/view?usp=sharing"
-},
+    {
+      x: 0.252281, y: 0.378596, w: 0.005848, h: 0.005848,
+      tileX: 43, tileY: 64, tilesW: 1, tilesH: 1,
+      title: "Peace like Bonolatha Sen (Video)",
+      date: "Nov 2025",
+      place: "Sydney",
+      text: "Play video",
+      image: "photos/thumb3.jpg",
+      link: "https://drive.google.com/file/d/1jPKitVxOo7ecJnBVBlaGRu4WYBS9gARK/view?usp=sharing",
+      type: "video"
+    },
 
-{
-  x: 0.240585, y: 0.390292, w: 0.005848, h: 0.005848,
-  tileX: 41, tileY: 66, tilesW: 1, tilesH: 1,
-  title: "Mallika (Video)",
-  date: "Jan 2026",
-  place: "Sydney",
-  text: "Play video",
-  image: "photos/thumb5.jpg",
-  link: "https://raw.githubusercontent.com/fridayflash-ux/journal/main/mp4/Mallika.mp4"
-},
+    {
+      x: 0.246433, y: 0.384444, w: 0.005848, h: 0.005848,
+      tileX: 42, tileY: 65, tilesW: 1, tilesH: 1,
+      title: "X-mas Cruise (Video)",
+      date: "Dec 2025",
+      place: "Sydney",
+      text: "Play video",
+      image: "photos/thumb4.jpg",
+      link: "https://drive.google.com/file/d/1SjboR1h1CsfPi7iLww7Dqqg9QDDw1iBP/view?usp=sharing",
+      type: "video"
+    },
 
-{
-  x: 0.234737, y: 0.401988, w: 0.005848, h: 0.005848,
-  tileX: 40, tileY: 68, tilesW: 1, tilesH: 1,
-  title: "MyChery (Video)",
-  date: "",
-  place: "Sydney",
-  text: "Play video",
-  image: "photos/thumb6.jpg",
-  link: "https://raw.githubusercontent.com/fridayflash-ux/journal/main/mp4/MyChery.mp4"
-},
+    {
+      x: 0.240585, y: 0.390292, w: 0.005848, h: 0.005848,
+      tileX: 41, tileY: 66, tilesW: 1, tilesH: 1,
+      title: "Mallika (Video)",
+      date: "Jan 2026",
+      place: "Sydney",
+      text: "Play video",
+      image: "photos/thumb5.jpg",
+      link: "https://raw.githubusercontent.com/fridayflash-ux/journal/main/mp4/Mallika.mp4",
+      type: "video"
+    },
 
-{
-  x: 0.246433, y: 0.378596, w: 0.005848, h: 0.005848,
-  tileX: 42, tileY: 64, tilesW: 1, tilesH: 1,
-  title: "Returning to Myself (Video)",
-  date: "",
-  place: "Sydney",
-  text: "Play video",
-  image: "photos/thumb7.jpg",
-  link: "https://raw.githubusercontent.com/fridayflash-ux/journal/main/mp4/Returning%20to%20Myself.mp4"
-},
-  
-  {
-  x: 0.515439, y: 0.179766, w: 0.017544, h: 0.017544,
-  tileX: 87, tileY: 29, tilesW: 3, tilesH: 3,
-  title: "అంతరాలు దాటినా, నీవే నా వెలుగు, నా శాంతి.",
-  date: "9 Dec 2025",
-  place: "SYDNEY",
-  text: `అంతరాలు ఎంత దూరం పెట్టినా,
+    {
+      x: 0.234737, y: 0.401988, w: 0.005848, h: 0.005848,
+      tileX: 40, tileY: 68, tilesW: 1, tilesH: 1,
+      title: "MyChery (Video)",
+      date: "",
+      place: "Sydney",
+      text: "Play video",
+      image: "photos/thumb6.jpg",
+      link: "https://raw.githubusercontent.com/fridayflash-ux/journal/main/mp4/MyChery.mp4",
+      type: "video"
+    },
+
+    {
+      x: 0.246433, y: 0.378596, w: 0.005848, h: 0.005848,
+      tileX: 42, tileY: 64, tilesW: 1, tilesH: 1,
+      title: "Returning to Myself (Video)",
+      date: "",
+      place: "Sydney",
+      text: "Play video",
+      image: "photos/thumb7.jpg",
+      link: "https://raw.githubusercontent.com/fridayflash-ux/journal/main/mp4/Returning%20to%20Myself.mp4",
+      type: "video"
+    },
+
+    {
+      x: 0.515439, y: 0.179766, w: 0.017544, h: 0.017544,
+      tileX: 87, tileY: 29, tilesW: 3, tilesH: 3,
+      title: "అంతరాలు దాటినా, నీవే నా వెలుగు, నా శాంతి.",
+      date: "9 Dec 2025",
+      place: "SYDNEY",
+      text: `అంతరాలు ఎంత దూరం పెట్టినా,
 నిన్ను తలచినప్పుడు హృదయం నిండే వెలుగు.
 నీవే నా ప్రేరణ, నా ప్రేమ, నా శాంతి.`,
-  image: "photos/a11.jpg"
-},
-  
-  {
-    x: 0.357544, y: 0.179766, w: 0.005848, h: 0.005848,
-    tileX: 62, tileY: 24,
-    title: "THE FIRST MOVIE",
-    date: "31-OCT-2025",
-    place: "HOYTS WESTPOINT",
-    text: `Every date of ours was unplanned — a spontaneous decision made in the moment — yet each one became something beautiful.
+      image: "photos/a11.jpg",
+      type: "diary"
+    },
+
+    {
+      x: 0.357544, y: 0.179766, w: 0.005848, h: 0.005848,
+      tileX: 62, tileY: 24,
+      title: "THE FIRST MOVIE",
+      date: "31-OCT-2025",
+      place: "HOYTS WESTPOINT",
+      text: `Every date of ours was unplanned — a spontaneous decision made in the moment — yet each one became something beautiful.
 
 It was never the place that mattered to us. It was the comfort of your hand in mine, the joy of being in each other’s company and the quiet magic of looking into each other’s eyes.
 
 Each moment leaves us wondering how blessed we are, grateful for every step of the past that led us here.
 
 Whether it was a monthversary we celebrated or a simple catch-up that blossomed into a date, every moment has been savoured with the same warmth, the same passion and the same intensity that kept us drawing closer.`,
-    image: "photos/MOVIE.jpg"
-  },
+      image: "photos/MOVIE.jpg",
+      type: "diary"
+    },
 
-  {
-    x: 0.328304, y: 0.132982, w: 0.005848, h: 0.005848,
-    tileX: 56, tileY: 22,
-    title: "DIWALI 2025",
-    date: "DATE",
-    place: "PLACE",
-    text: `Deepavali 2025 felt unforgettable because Anannya poured her whole heart into it.
+    {
+      x: 0.328304, y: 0.132982, w: 0.005848, h: 0.005848,
+      tileX: 56, tileY: 22,
+      title: "DIWALI 2025",
+      date: "DATE",
+      place: "PLACE",
+      text: `Deepavali 2025 felt unforgettable because Anannya poured her whole heart into it.
 
 She filled every corner with light — from the front door to the backyard deck, from the living room to my own space — turning the house into something magical.
 
 And somewhere between the laughter and the quiet moments, I realised something simple and true:
 
 Anannya herself is the Deepavali of my life — the light, the warmth and the hope that glows effortlessly.`,
-    image: "photos/diwali1.jpg"
-  },
+      image: "photos/diwali1.jpg",
+      type: "diary"
+    }
 
-  {
-    x: 0.351696, y: 0.138830, w: 0.005848, h: 0.005848,
-    tileX: 60, tileY: 23, tilesW: 1, tilesH: 1,
-    title: "TEMPLE VISIT",
-    date: "27 JAN 2026",
-    place: "MURUGAN TEMPLE WESTMEAD",
-    text: `SPECIALLY PLANNED TEMPLE VISIT ON A WORK DAY OFF`,
-    image: "photos/Temple.JPEG"
-  },
+    // ✅ keep the rest of your existing hotspots here
+    // Tip: set type:"diary" for letters/diary, type:"video" for video, type:"art" for art pieces
+  ];
 
-  {
-    x: 0.357544, y: 0.156374, w: 0.005848, h: 0.005848,
-    tileX: 61, tileY: 26, tilesW: 1, tilesH: 1,
-    title: "KIDS SECOND VISIT",
-    date: "17 JAN 2026",
-    place: "KELLYVILLE",
-    text: `PROOF THAT GOOD THINGS COME IN DIFFERENT SIZES`,
-    image: "photos/ABHI.JPEG"
-  },
-
-  {
-    x: 0.410175, y: 0.150526, w: 0.005848, h: 0.005848,
-    tileX: 70, tileY: 25, tilesW: 1, tilesH: 1,
-    title: "THE FIRST DATE",
-    date: "31-OCT-2025",
-    place: "MEDMEX BLACKTOWN",
-    text: `CHAPTER ONE THE PRE-MOVIE DINNER`,
-    image: "photos/31-OCT.jpg"
-  },
-
-  {
-    x: 0.427719, y: 0.127135, w: 0.005848, h: 0.005848,
-    tileX: 73, tileY: 21, tilesW: 1, tilesH: 1,
-    title: "UNSCRIPTED MOMENT",
-    date: "10 OCT 2025",
-    place: "GOSFORD",
-    text: `On Indrani Di’s house warming day, a candid moment was frozen in time — capturing a look from Anannya that I’ll carry with me for a long, long time.
-
-In her soft, amused gaze, I found belonging. A quiet joy I never thought I’d feel again.
-
-This frame is proof that because of her, the world feels a little more mine.`,
-    image: "photos/IND.jpg"
-  },
-
-  {
-    x: 0.147018, y: 0.273333, w: 0.005848, h: 0.005848,
-    tileX: 25, tileY: 46, tilesW: 1, tilesH: 1,
-    title: "আমার ইচ্ছে…",
-    date: "17 Dec 2025",
-    place: "KELLYVILLE",
-    text: `ছোটবেলা থেকেই একখানা ছবি মনের দেয়ালে টাঙানো ছিল—সাদা শাড়ি, বেলি ফুলের মালা, আর একখানা নীরব হাসি। সানজিদা খাতুনের ছেলের বিয়েতে দেখেই সেই স্বপ্নের বীজ বোনা হয়েছিল। ভেবেছিলাম, একদিন আমিও সাদা শাড়ির সৌরভে, বেলি ফুলের গন্ধে নিজেকে ভরিয়ে নতুন জীবনের দুয়ার পেরোব—বুকভরা কাঁপা কাঁপা আনন্দ নিয়ে।
-
-জীবন কিন্তু কবিতার মতো সরল নয়। প্রথম জীবনে সেই স্বপ্ন অধরাই রয়ে গেল। অনেক চাওয়া ঝরে পড়ল, অনেক অপেক্ষা ক্লান্ত হলো। তবু মনের গভীরে একটুকরো ইচ্ছে নিভে যায়নি—নিভু নিভু আলো হয়ে সে শুধু অপেক্ষা করছিল, তার নিজের সময়ের জন্য।
-
-যা হারায়, তা হারায় না—
-মনের গোপন ঘরে সে থাকে,
-নীরব আশায় দিনের পর দিন
-নিজের ডাক শোনবার অপেক্ষায়।
-
-আর আজ, হঠাৎ করেই, সেই আলোর ডাকে সাড়া দিয়ে এলো আমার মানুষ—আমার ভালোবাসার মানুষ। জীবনের চাওয়া-উচ্ছ্বাস আজ আবার প্রথম জীবনের মতোই নবীন, কাঁচা রোদের মতো উজ্জ্বল।
-
-সংস্কৃতি ভিন্ন, ধর্ম ভিন্ন, ভাষা ভিন্ন—সবকিছু আলাদা। তবু আশ্চর্য এক অদৃশ্য সেতুতে আমাদের দুই হৃদয় মিলেছে।
-
-ভিন্ন ভিন্ন তটে দাঁড়িয়ে
-একই নদীর গান শুনেছি আমরা,
-ভাষা আলাদা, পথ আলাদা—
-তবু হৃদয়ের সুর এক হয়ে বেজেছে।
-
-শুনেছি, ওদের রীতিতে সাদা শাড়ির স্থান নেই। তাই আমার স্বপ্নটাও আজ একটু বদলে নিয়েছে রং—সাদা শাড়ির বুকে হলুদের আলতো ছোঁয়া। যেন দু’টি আলাদা পথ এসে এক জায়গায় মিশে গেল।
-
-এই মিলন কোনো নিয়ম মানে না,
-এই প্রেম রঙের সীমা চেনে না—
-স্বপ্ন আর সত্য মিলে আজ
-একটি গানেই বেঁধে দিল জীবন।
-
-আমার স্বপ্ন আর আমার পাওয়া—দুটো মিলিয়ে আজ একটাই গান। রবীন্দ্রনাথের ভাষায় বললে,
-“ভিন্ন পথে চলেও যাদের মিলন ঘটে, তারাই বুঝি সত্যিকার আপন।”`,
-    image: "photos/MALLE.jpg"
-  },
-
-  {
-    x: 0.129474, y: 0.168070, w: 0.005848, h: 0.005848,
-    tileX: 22, tileY: 28, tilesW: 1, tilesH: 1,
-    title: "A Tribute",
-    date: "Thursday 15 January 2026",
-    place: "Sydney",
-    text: `যিদও এই জীবেনর পেথ আপনার সে2 আমার সরাসির সা4াৎ ঘেটিন, তব9 আপনার :শ< আিম =িতিদন অন9ভব কির,আপনার গেড় Cতালা পিরবাের, তােদর আচরেণ, তােদর মGলHেবােধর নীরব দীিJেত। আপিন Cয আেলা Lািলেয় Cগেছন, তারই িকরণ আজ আমার জীবেনর পেথ এেস পেড়। সংPািQর এই প9ণH4েণ, নত9ন ফসেলর =তীক আর Sদেয়র =াথ<না হােত িনেয় আিম আপনােক Uরণ কির গভীর VWায়। Cয দXঢ় িভিZর ওপর আজ আমার আগামীর [\ দঁািড়েয় আেছ, Cসই িভিZর CনপথH িনম<াতা আপিন নীরব, অথচ িচর^ায়ী।`,
-    image: "photos/a10.JPEG"
-  },
-
-  {
-    x: 0.147018, y: 0.179766, w: 0.005848, h: 0.005848,
-    tileX: 25, tileY: 30, tilesW: 1, tilesH: 1,
-    title: "100 Days of Us",
-    date: "Sunday 11 January 2026",
-    place: "Sydney",
-  text: `একশো দিন—শুধু সময় নয়, এক নীরব প্রতিশ্রুতি।
-কথা ও নীরবতার ভেতর দিয়ে আমরা শিখেছি স্থিরতা।
-যা সত্য, তা হৃদয়ে শিকড় ছড়িয়েছে।
-এই পথচলা থামবে না—তোমার নামেই, তোমার সাথে।`,
-  image: "photos/100.jpg"
-},
-
-  {
-    x: 0.123626, y: 0.220702, w: 0.005848, h: 0.005848,
-    tileX: 21, tileY: 37, tilesW: 1, tilesH: 1,
-    title: "A Rain-Soaked Diary",
-    date: "Tuesday 20 January 2026",
-    place: "Sydney",
-     text: `সারাদিন নীরব বৃষ্টি, মনটাও ভারী।
-বিদায় এখনও আসেনি, তবু তার ছায়া পড়ে গেছে।
-পাতার জল যেমন ঝরে পড়ে, তেমনই ছাড়তে শেখায় সময়।
-আজ লিখে রাখলাম: আমি ক্লান্ত, তবু আলো আসবে।`,
-  image: "photos/a1.jpg"
-  },
-
-  {
-    x: 0.147018, y: 0.255789, w: 0.005848, h: 0.005848,
-    tileX: 25, tileY: 43, tilesW: 1, tilesH: 1,
-    title: "A Promise, Quiet and True",
-    date: "Wednesday 21 January 2026",
-    place: "Sydney",
-  text: `ভাঙা পথ পেরিয়ে আমরা আশ্রয় খুঁজেছিলাম,
-আর নীরবতার মাঝেই ভালোবাসা এসে বসেছিল।
-আজ প্রতিজ্ঞা: অতীতকে সম্মান, কিন্তু শিকল নয়।
-ভিন্নতা দেয়াল হবে না, চার শিশুর জন্য সমান ভালোবাসা।`,
-    image: "photos/a2.jpg"
-  },
-
-  {
-    x: 0.187953, y: 0.285029, w: 0.005848, h: 0.005848,
-    tileX: 32, tileY: 48, tilesW: 1, tilesH: 1,
-    title: "Glass-Walled Office Day",
-    date: "Friday 6 February 2026",
-    place: "Sydney",
-     text: `অফিসে বসে আছি, মন এখানে নয়।
-দূরত্ব মাইল নয়, হৃদয়ের ভেতরের ফাঁক।
-জানালার বাইরে স্কুল-চাইল্ডকেয়ার, ছোট হাসিরা চলে যায়।
-আজ বুঝলাম: কাজ বাঁধে, ভাবনা বাঁধা মানে না।`,
-    image: "photos/a3.jpeg"
-  },
-
-  {
-    x: 0.304912, y: 0.337661, w: 0.005848, h: 0.005848,
-    tileX: 52, tileY: 57, tilesW: 1, tilesH: 1,
-    title: "Weekend: Country in the Kitchen",
-    date: "Sunday 8 February 2026",
-    place: "Sydney",
-  text: `উইকএন্ড, তবু চাপ বুকের ওপর বসে।
-তবু রান্নাঘরের ডাক: আজ charity-র জন্য রান্না।
-ঝাল চিকেন, লাউডাল, ভাজা সমোসা, বাগানের সবজি।
-বিদেশের মাটিতেও শিকড় বলে: তুমি একা নও।`,
-    image: "photos/a4.jpg"
-  },
-
-  {
-    x: 0.199649, y: 0.296725, w: 0.005848, h: 0.005848,
-    tileX: 34, tileY: 50, tilesW: 1, tilesH: 1,
-    title: "Life’s Winding Light",
-    date: "Wednesday 11 February 2026",
-    place: "Sydney",
-   text: `জীবনের পথ নদীর মতো, বাঁক নেয়, থামে না।
-বিদেশে একা জননী, কাজ আর দায়িত্বের দীর্ঘ দিন।
-ক্লান্তি আসে, তবু সন্তানের হাসি আলো জ্বালায়।
-আমি থামি না: রাত গভীর হলেও প্রদীপ নেভে না।`,
-    image: "photos/light.jpg"
-  },
-
-  {
-    x: 0.176257, y: 0.209006, w: 0.005848, h: 0.005848,
-    tileX: 30, tileY: 35, tilesW: 1, tilesH: 1,
-    title: "Valentine Letter",
-    date: "Saturday 14 February 2026",
-    place: "Sydney",
-    text: `Dear Jaan,
-I am not a great writer, nor do I always know how to arrange beautiful words…
-Happy Valentines day.
-Forever yours.`,
-    image: "photos/v1.jpg"
-  },
-
-  {
-    x: 0.164561, y: 0.267485, w: 0.005848, h: 0.005848,
-    tileX: 28, tileY: 45, tilesW: 1, tilesH: 1,
-    title: "Love Day Diary",
-    date: "Sunday 15 February 2026",
-    place: "Sydney",
-text: `১৪ ফেব্রুয়ারি: তোমার ভালোবাসা শিশিরের মতো নেমে এলো।
-দিনভর রঙ বদলাল, মন পেল স্থির আশ্বাস।
-এটা শুধু তারিখ নয়, এক নতুন বিশ্বাসের শুরু।
-চিরন্তনের নাম: তুমি, শ্রীকান্ত।`,
-    image: "photos/v2.JPEG"
-  },
-
-  {
-    x: 0.106082, y: 0.185614, w: 0.005848, h: 0.005848,
-    tileX: 18, tileY: 31, tilesW: 1, tilesH: 1,
-    title: "Shelter in the Dark",
-    date: "Thursday 19 February 2026",
-    place: "Sydney",
-  text: `অন্যের অস্থিরতা আজ মনকে ছুঁয়ে গেল।
-তবু অন্ধকার আমার কাছে বিশ্রামের রং,
-মাইগ্রেনের যন্ত্রণায় সে দেয় নীরব আশ্রয়।
-ভেতরের আকাশে আমি আলোই রাখি: সহানুভূতি অন্ধকার হতে দেয় না।`,
-    image: "photos/a6.JPEG"
-  },
-
-  {
-    x: 0.451111, y: 0.115439, w: 0.005848, h: 0.005848,
-    tileX: 77, tileY: 19, tilesW: 1, tilesH: 1,
-    title: "GRACE IN EVERY THREAD",
-    date: "2025",
-    place: "SYDNEY",
-    text: `I used to believe that women of such grace and depth — the ones who soothed the weary hearts of poets — lived only in imagination.
-
-Then came Anannya, real and luminous, stepping out of the pages of a dream to offer a sense of belonging I never thought I’d find again.
-
-She is the muse the painters missed, and the quiet joy I finally know how to hold.`,
-    image: "photos/a7a.JPEG"
-  },
-  
-{
-  x: 0.451111, y: 0.168070, w: 0.005848, h: 0.005848,
-  tileX: 77, tileY: 28, tilesW: 1, tilesH: 1,
-  title: "A Promise in Quiet Light",
-  date: "Sunday 11 January 2026",
-  place: "Sydney",
-  text: `নীরবতার ভেতরেই গভীর ভাষা খুঁজে পেয়েছি।
-একশো দিনে যা অস্থির ছিল ঝরে গেছে,
-আর যা সত্য, তা রয়ে গেছে।
-এই ভালোবাসা অনুভব নয়—এক স্থির অঙ্গীকার।`,
-  image: "photos/a8a.jpeg"
-},
-  
-  {
-    x: 0.451111, y: 0.144678, w: 0.005848, h: 0.005848,
-    tileX: 77, tileY: 24, tilesW: 1, tilesH: 1,
-    title: "A DESIGNERS EYE",
-    date: "OCT 2025",
-    place: "SYDNEY",
-    text: `From the smallest gifts to the biggest gatherings, Anannya brings a designer’s eye and a heart full of love to everything she touches.
-
-She turns ordinary life into something aesthetic and unique, proving that beauty is found in the details.
-
-Life just feels a little more beautiful when she’s behind the design.`,
-    image: "photos/f.jpg"
-  },
-  
-{
-  x: 0.503743, y: 0.191462, w: 0.005848, h: 0.005848,
-  tileX: 86, tileY: 32, tilesW: 1, tilesH: 1,
-  title: "When Dreams Found Their Time",
-  date: "Wednesday 17 December 2025",
-  place: "Sydney",
-  text: `ছোটবেলার সাদা শাড়ির স্বপ্ন একদিন হারিয়ে গিয়েছিল। 
-কিন্তু কিছু আলো নেভে না—সময় এলে ফিরে আসে।
-ভিন্ন সংস্কৃতি, ভিন্ন ভাষা—তবু হৃদয়ের সুর এক হলো।
-স্বপ্ন আর প্রাপ্তি মিলিয়ে আজ একটিই গান।`,
-  image: "photos/a8.jpg"
-},
-  
-  {
-    x: 0.369240, y: 0.150526, w: 0.005848, h: 0.005848,
-    tileX: 63, tileY: 25, tilesW: 1, tilesH: 1,
-    title: "A BIRTHDAY TO REMEMBER",
-    date: "26 OCT 2025",
-    place: "KELLYVILLE",
-    text: `From a basket of shirts to a cake cut exactly at midnight, Anannya’s birthday planning was a masterclass in personal and romantic gestures.
-
-She has a rare gift for making the ordinary feel extraordinary through her care and devotion.
-
-This day was proof that the best gifts aren't just things, but the feeling of being truly cherished.`,
-    image: "photos/v3.JPEG"
-  },
-
-  {
-    x: 0.345848, y: 0.127135, w: 0.005848, h: 0.005848,
-    tileX: 59, tileY: 21, tilesW: 1, tilesH: 1,
-    title: "FASHION DIVA",
-    date: "2026",
-    place: "SYDNEY",
-    text: `A true fashion diva, Anannya turns every outfit into a statement through her thoughtful choices and natural elegance.
-
-From vibrant traditional wear to simple modern silhouettes, she wears everything with a grace that makes the colors bloom a little brighter.
-
-She reminds us all just how powerful a signature style can be.`,
-    image: "photos/G2.jpg"
-  },
-
-  {
-    x: 0.345848, y: 0.103743, w: 0.005848, h: 0.005848,
-    tileX: 49, tileY: 66, tilesW: 1, tilesH: 1,
-    title: "ANANNYA OWNS COLOUR RED",
-    date: "FEB 2025",
-    place: "KELLYVILLE",
-    text: `Anannya can pull off any palette, but red is her true soulmate. Saree or suit, simple or grand—if it’s red, it’s hers.`,
-    image: "photos/RED.jpg"
-  },
-
-  {
-    x: 0.386784, y: 0.226550, w: 0.005848, h: 0.005848,
-    tileX: 66, tileY: 38, tilesW: 1, tilesH: 1,
-    title: "আইবুরোভাত",
-    date: "21 FEB 2026",
-    place: "HORNSBY",
-    text: `Celebrating the last grand feast of single life!
-
-Anannya enjoying the traditions and delicious sweets at her friend’s daughter’s আইবুড়োভাত.`,
-    image: "photos/G1.jpg"
-  },
-
-  {
-    x: 0.380936, y: 0.255789, w: 0.005848, h: 0.005848,
-    tileX: 65, tileY: 43, tilesW: 1, tilesH: 1,
-    title: "XMAS CRUISE",
-    date: "23 DEC 2025",
-    place: "DARLING HARBOUR",
-    text: `Enjoying a magical Xmas cruise in Sydney Harbour — sailing into the holiday spirit with the best views in the city!`,
-    image: "photos/xmas.JPEG"
-  }
-];
   // ===== Popover =====
-  const pop = document.getElementById("popover");
+  const pop      = document.getElementById("popover");
   const popTitle = document.getElementById("popTitle");
   const popMeta  = document.getElementById("popMeta");
   const popText  = document.getElementById("popText");
-  const popImg   = document.getElementById("popImg");
+  const popMedia = document.getElementById("popMedia");
+  const popClose = document.getElementById("popClose");
+
   let closeTimer = null;
+  let popLocked = false;
+  let currentHotspot = null;
 
   function cancelClose(){ clearTimeout(closeTimer); }
   function scheduleClose(){
     clearTimeout(closeTimer);
+    if (popLocked) return;
     closeTimer = setTimeout(() => pop.style.display = "none", 160);
   }
+
+  function closePopover(){
+    popLocked = false;
+    currentHotspot = null;
+    pop.style.display = "none";
+    const v = pop.querySelector("video");
+    if (v) { try { v.pause(); } catch(e){} v.src = ""; }
+  }
+
+  popClose.addEventListener("click", closePopover);
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closePopover();
+    if (e.key.toLowerCase() === "c") document.body.classList.toggle("constellation"); // ✨ constellation mode
+  });
 
   function positionPopover(evt){
     const pad = 14;
@@ -612,13 +403,83 @@ Anannya enjoying the traditions and delicious sweets at her friend’s daughter�
     pop.style.top  = Math.max(10, y) + "px";
   }
 
-  function openPopover(h, evt){
+  function isVideoHotspot(h){
+    if (h.type === "video") return true;
+    if (h.link && /\.mp4(\?|#|$)/i.test(h.link)) return true;
+    return false;
+  }
+
+  function isExternalLinkOnly(h){
+    // Flipbooks / Google Drive "view" links (not direct MP4) can't be embedded reliably
+    if (!h.link) return false;
+    if (isVideoHotspot(h)) return false;
+    return true;
+  }
+
+  function renderMediaForHotspot(h){
+    const videoMode = isVideoHotspot(h);
+
+    // Clear click handler each time
+    popMedia.onclick = null;
+
+    if (!videoMode) {
+      popMedia.innerHTML = `<img id="popImg" alt="">`;
+      const img = popMedia.querySelector("#popImg");
+      img.src = h.image || "";
+      img.alt = h.title || "";
+      // If it’s a flipbook / external, click opens new tab
+      if (isExternalLinkOnly(h)) {
+        popMedia.onclick = () => window.open(h.link, "_blank", "noopener,noreferrer");
+      }
+      return;
+    }
+
+    // Video: show thumbnail first, click swaps to video (if MP4 direct), otherwise open link
+    const thumb = h.image || "";
+    const src = h.link || "";
+
+    popMedia.innerHTML = `
+      <div style="position:relative;width:100%;height:100%;">
+        <img alt="" style="width:100%;height:100%;object-fit:contain;" src="${thumb}">
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
+          <div style="
+            width:64px;height:64px;border-radius:20px;
+            background: rgba(20,35,60,0.55);
+            border: 1px solid rgba(150,210,255,0.35);
+            box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+            display:flex;align-items:center;justify-content:center;
+            font-size:28px; color:#fff;
+          ">▶</div>
+        </div>
+      </div>
+    `;
+
+    popMedia.onclick = () => {
+      popLocked = true; // ✅ stick open once user clicks
+      // Only embed if it's a direct mp4. Google Drive "view" won't play in <video>.
+      if (!/\.mp4(\?|#|$)/i.test(src)) {
+        window.open(src, "_blank", "noopener,noreferrer");
+        return;
+      }
+      popMedia.innerHTML = `
+        <video controls autoplay playsinline style="width:100%;height:100%;object-fit:contain;background:#0b0b0f">
+          <source src="${src}" type="video/mp4">
+        </video>
+      `;
+    };
+  }
+
+  function openPopover(h, evt, lock=false){
+    currentHotspot = h;
+    popLocked = !!lock;
+
     popTitle.textContent = h.title || "";
     popMeta.textContent  = [h.date, h.place].filter(Boolean).join(" • ");
     popText.textContent  = h.text || "";
-    popImg.src           = h.image || "";
-    popImg.alt           = h.title || "";
-    pop.style.display    = "block";
+
+    renderMediaForHotspot(h);
+
+    pop.style.display = "block";
     positionPopover(evt);
   }
 
@@ -634,7 +495,7 @@ Anannya enjoying the traditions and delicious sweets at her friend’s daughter�
     animationTime: 0.6,
     blendTime: 0.12,
     zoomPerScroll: 1.25,
-    maxZoomPixelRatio: 2.53, // ~10% more than 2.3
+    maxZoomPixelRatio: 2.53,
     preserveViewport: false,
     gestureSettingsMouse: { scrollToZoom:true, clickToZoom:false, dblClickToZoom:false }
   });
@@ -642,6 +503,11 @@ Anannya enjoying the traditions and delicious sweets at her friend’s daughter�
   function addHotspot(h){
     const wrap = document.createElement("div");
     wrap.className = "hs-wrap";
+
+    // ✅ color/glow by type
+    if (h.type === "art")   wrap.classList.add("hs-art");
+    if (h.type === "video") wrap.classList.add("hs-video");
+    if (h.type === "diary") wrap.classList.add("hs-diary");
 
     const halo = document.createElement("div");
     halo.className = "hs-halo";
@@ -655,10 +521,16 @@ Anannya enjoying the traditions and delicious sweets at her friend’s daughter�
     hit.className = "hs-hit";
     wrap.appendChild(hit);
 
-    hit.addEventListener("mouseenter", (e) => { cancelClose(); openPopover(h, e); });
+    // Hover behavior (don’t auto-close if locked)
+    hit.addEventListener("mouseenter", (e) => { cancelClose(); openPopover(h, e, false); });
     hit.addEventListener("mousemove",  (e) => { if(pop.style.display === "block") positionPopover(e); });
     hit.addEventListener("mouseleave", scheduleClose);
-    hit.addEventListener("click",      (e) => { cancelClose(); openPopover(h, e); });
+
+    // Click locks popover
+    hit.addEventListener("click", (e) => {
+      cancelClose();
+      openPopover(h, e, true);
+    });
 
     const rect = new OpenSeadragon.Rect(h.x - h.w/2, h.y - h.h/2, h.w, h.h);
     viewer.addOverlay({ element: wrap, location: rect });
@@ -674,6 +546,13 @@ Anannya enjoying the traditions and delicious sweets at her friend’s daughter�
     console.error("DZI open failed:", e);
     alert("DZI open failed. Check mosaic_4275.dzi is in the same folder as index.html");
   });
+
+  // Optional: click anywhere empty to unlock/close
+  viewer.addHandler("canvas-click", (e) => {
+    // If you want click on canvas to close popover, uncomment:
+    // closePopover();
+  });
+
 </script>
 
 </body>
