@@ -58,7 +58,29 @@
       15%  { opacity: 1; }
       100% { opacity: 0; transform: translate(-50%,-50%) scale(1.4); }
     }
+/* ===== Artistic Hotspots ===== */
 
+.hs-art .hs-dot{
+  background: rgba(255, 215, 160, 0.6);
+  box-shadow:
+    0 0 14px rgba(255, 200, 140, 0.9),
+    0 0 30px rgba(255, 180, 120, 0.5);
+  outline: 1px solid rgba(255, 215, 160, 0.7);
+}
+
+.hs-art .hs-halo{
+  border: 1px solid rgba(255, 210, 150, 0.9);
+  box-shadow:
+    0 0 30px rgba(255, 200, 140, 0.8),
+    0 0 60px rgba(255, 180, 120, 0.4);
+  animation: haloSoft 3.5s ease-in-out infinite;
+}
+
+@keyframes haloSoft{
+  0%   { opacity: 0.2; transform: translate(-50%,-50%) scale(0.9); }
+  50%  { opacity: 0.9; transform: translate(-50%,-50%) scale(1.1); }
+  100% { opacity: 0.2; transform: translate(-50%,-50%) scale(0.9); }
+}
     /* Popover */
     #popover{
       position: fixed;
