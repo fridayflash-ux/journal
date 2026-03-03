@@ -113,21 +113,13 @@
     }
 
     /* DOT: type-specific */
-    .hs-dot{
-      position:absolute;
-      left:50%; top:50%;
-      width:12px; height:12px;
-      transform:translate(-50%,-50%);
-      border-radius:999px;
-      background: rgba(255,255,255,0.55);
-      backdrop-filter: blur(3px);
-      box-shadow:
-        0 0 10px rgba(255,255,255,0.8),
-        0 0 22px rgba(255,255,255,0.5);
-      outline: 1px solid rgba(255,255,255,0.6);
-      outline-offset: 2px;
-      pointer-events:none;
-    }
+  .hs-dot{
+  background: rgba(255,255,255,0.5);   /* 50% white */
+  box-shadow:
+    0 0 12px rgba(255,255,255,0.7),
+    0 0 28px rgba(255,255,255,0.4);
+  outline: 1px solid rgba(255,255,255,0.6);
+}
 
     /* HALO: always WHITE (your request) */
     .hs-halo{
@@ -149,17 +141,6 @@
       100% { opacity: 0; transform: translate(-50%,-50%) scale(1.4); }
     }
 
-    /* Type colors (DOT only) */
-    .hs-video .hs-dot,
-.hs-diary .hs-dot,
-.hs-memory .hs-dot,
-.hs-art .hs-dot{
-  background: rgba(255,255,255,0.5);
-  box-shadow:
-    0 0 12px rgba(255,255,255,0.7),
-    0 0 28px rgba(255,255,255,0.4);
-  outline: 1px solid rgba(255,255,255,0.6);
-}
 
     /* Optional constellation mode: twinkle dots only (halo stays white) */
     body.constellation .hs-memory .hs-dot,
