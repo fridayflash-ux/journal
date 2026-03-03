@@ -8,109 +8,103 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
 
   <style>
-    /* ===== First-load Helper Bubbles ===== */
-#helperLayer{
-  position: fixed;
-  inset: 0;
-  z-index: 30000;           /* above everything */
-  pointer-events: none;     /* doesn't block zoom/pan */
-  display: none;
-}
-
-.helper-bubble{
-  position: absolute;
-  max-width: 260px;
-  padding: 10px 12px;
-  border-radius: 16px;
-  background: rgba(18,18,22,0.75);
-  border: 1px solid rgba(255,255,255,0.14);
-  backdrop-filter: blur(10px);
-  color: #fff;
-  font-family: Inter, system-ui, Segoe UI, Arial, sans-serif;
-  box-shadow: 0 18px 70px rgba(0,0,0,0.55);
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity .6s ease, transform .6s ease;
-}
-
-.helper-bubble.show{
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.helper-title{
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.helper-text{
-  font-size: 12.5px;
-  opacity: 0.85;
-  line-height: 1.45;
-}
-
-.helper-chip{
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.helper-dot{
-  width: 10px; height: 10px;
-  border-radius: 999px;
-  box-shadow: 0 0 14px rgba(255,255,255,0.25);
-}
-
-/* Match your glow language */
-.helper-dot.video{
-  background: rgba(120,190,255,0.95);
-  box-shadow: 0 0 14px rgba(120,190,255,0.85);
-}
-.helper-dot.diary{
-  background: rgba(205,170,255,0.95);
-  box-shadow: 0 0 14px rgba(205,170,255,0.75);
-}
-.helper-dot.art{
-  background: rgba(255,215,160,0.95);
-  box-shadow: 0 0 14px rgba(255,215,160,0.75);
-}
-
-/* Little arrow pointer */
-.helper-bubble::after{
-  content:"";
-  position:absolute;
-  width: 10px; height: 10px;
-  background: rgba(18,18,22,0.75);
-  border-left: 1px solid rgba(255,255,255,0.14);
-  border-top: 1px solid rgba(255,255,255,0.14);
-  transform: rotate(45deg);
-}
-
-/* Arrow placement variants */
-.helper-bubble.arrow-top::after{ top:-6px; left: 22px; }
-.helper-bubble.arrow-left::after{ left:-6px; top: 22px; transform: rotate(-45deg); }
-.helper-bubble.arrow-right::after{ right:-6px; top: 22px; transform: rotate(135deg); }
-.helper-bubble.arrow-bottom::after{ bottom:-6px; left: 22px; transform: rotate(-135deg); }
-
-#helperDismiss{
-  position: absolute;
-  right: 16px;
-  top: 16px;
-  pointer-events: auto;     /* clickable */
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: #fff;
-  border-radius: 12px;
-  padding: 8px 10px;
-  cursor: pointer;
-  font-size: 12px;
-}
-#helperDismiss:hover{ background: rgba(255,255,255,0.12); }
     html, body { height:100%; margin:0; background:#0b0b0f; }
     #osd { width:100%; height:100%; }
 
-    /* Hotspot visuals */
+    /* ===== First-load Helper Bubbles ===== */
+    #helperLayer{
+      position: fixed;
+      inset: 0;
+      z-index: 30000;
+      pointer-events: none;  /* doesn't block zoom/pan */
+      display: none;
+    }
+    .helper-bubble{
+      position: absolute;
+      max-width: 260px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(18,18,22,0.75);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      font-family: Inter, system-ui, Segoe UI, Arial, sans-serif;
+      box-shadow: 0 18px 70px rgba(0,0,0,0.55);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .helper-bubble.show{
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .helper-title{
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .helper-text{
+      font-size: 12.5px;
+      opacity: 0.85;
+      line-height: 1.45;
+    }
+    .helper-chip{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .helper-dot{
+      width: 10px; height: 10px;
+      border-radius: 999px;
+      box-shadow: 0 0 14px rgba(255,255,255,0.25);
+    }
+    .helper-dot.video{
+      background: rgba(120,190,255,0.95);
+      box-shadow: 0 0 14px rgba(120,190,255,0.85);
+    }
+    .helper-dot.diary{
+      background: rgba(205,170,255,0.95);
+      box-shadow: 0 0 14px rgba(205,170,255,0.75);
+    }
+    .helper-dot.memory{
+      background: rgba(255,215,160,0.95);
+      box-shadow: 0 0 14px rgba(255,215,160,0.75);
+    }
+    .helper-dot.art{
+      background: rgba(255,215,160,0.95);
+      box-shadow: 0 0 14px rgba(255,215,160,0.75);
+    }
+
+    .helper-bubble::after{
+      content:"";
+      position:absolute;
+      width: 10px; height: 10px;
+      background: rgba(18,18,22,0.75);
+      border-left: 1px solid rgba(255,255,255,0.14);
+      border-top: 1px solid rgba(255,255,255,0.14);
+      transform: rotate(45deg);
+    }
+    .helper-bubble.arrow-top::after{ top:-6px; left: 22px; }
+    .helper-bubble.arrow-left::after{ left:-6px; top: 22px; transform: rotate(-45deg); }
+    .helper-bubble.arrow-right::after{ right:-6px; top: 22px; transform: rotate(135deg); }
+    .helper-bubble.arrow-bottom::after{ bottom:-6px; left: 22px; transform: rotate(-135deg); }
+
+    #helperDismiss{
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      pointer-events: auto;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      border-radius: 12px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    #helperDismiss:hover{ background: rgba(255,255,255,0.12); }
+
+    /* ===== Hotspot visuals ===== */
     .hs-wrap{
       position: relative;
       overflow: visible;
@@ -130,7 +124,7 @@
       width:12px; height:12px;
       transform:translate(-50%,-50%);
       border-radius:999px;
-      background: rgba(255,255,255,0.5); /* 50% transparent white */
+      background: rgba(255,255,255,0.5);
       backdrop-filter: blur(3px);
       box-shadow:
         0 0 10px rgba(255,255,255,0.8),
@@ -158,21 +152,38 @@
       100% { opacity: 0; transform: translate(-50%,-50%) scale(1.4); }
     }
 
-    /* ===== Artistic Hotspots (warm gold) ===== */
+    /* ===== Art Hotspots (warm gold) ===== */
     .hs-art .hs-dot{
-      background: rgba(255, 215, 160, 0.6);
+      background: rgba(255, 215, 160, 0.65);
       box-shadow:
         0 0 14px rgba(255, 200, 140, 0.9),
         0 0 30px rgba(255, 180, 120, 0.5);
-      outline: 1px solid rgba(255, 215, 160, 0.7);
+      outline: 1px solid rgba(255, 215, 160, 0.75);
     }
     .hs-art .hs-halo{
-      border: 1px solid rgba(255, 210, 150, 0.9);
+      border: 1px solid rgba(255, 210, 150, 0.95);
       box-shadow:
         0 0 30px rgba(255, 200, 140, 0.8),
         0 0 60px rgba(255, 180, 120, 0.4);
       animation: haloSoft 3.5s ease-in-out infinite;
     }
+
+    /* ===== Memory Hotspots (soft gold) ===== */
+    .hs-memory .hs-dot{
+      background: rgba(255, 215, 160, 0.55);
+      box-shadow:
+        0 0 12px rgba(255, 205, 140, 0.75),
+        0 0 28px rgba(255, 185, 120, 0.45);
+      outline: 1px solid rgba(255, 215, 160, 0.6);
+    }
+    .hs-memory .hs-halo{
+      border: 1px solid rgba(255, 210, 150, 0.75);
+      box-shadow:
+        0 0 24px rgba(255, 200, 140, 0.65),
+        0 0 52px rgba(255, 180, 120, 0.35);
+      animation: haloSoft 3.2s ease-in-out infinite;
+    }
+
     @keyframes haloSoft{
       0%   { opacity: 0.2; transform: translate(-50%,-50%) scale(0.9); }
       50%  { opacity: 0.9; transform: translate(-50%,-50%) scale(1.1); }
@@ -181,17 +192,17 @@
 
     /* ===== Video Hotspots (cinematic blue) ===== */
     .hs-video .hs-dot{
-      background: rgba(255,255,255,0.5);
+      background: rgba(120,190,255,0.55);
       box-shadow:
-        0 0 14px rgba(255,255,255,0.8),
-        0 0 34px rgba(255,255,255,0.5);
-      outline: 1px solid rgba(255, 255, 255, 0.75);
+        0 0 16px rgba(120,190,255,0.9),
+        0 0 40px rgba(120,190,255,0.45);
+      outline: 1px solid rgba(150, 210, 255, 0.75);
     }
     .hs-video .hs-halo{
       border: 1px solid rgba(150, 210, 255, 0.95);
       box-shadow:
-        0 0 26px rgba(255, 255, 255, 0.8),
-        0 0 60px rgba(255, 255, 255, 0.5);
+        0 0 26px rgba(120,190,255,0.8),
+        0 0 60px rgba(120,190,255,0.45);
       animation: haloCine 2.4s ease-in-out infinite;
     }
     @keyframes haloCine{
@@ -202,17 +213,17 @@
 
     /* ===== Diary/Letter Hotspots (soft lavender) ===== */
     .hs-diary .hs-dot{
-      background: rgba(255, 255, 255, 0.5);
+      background: rgba(205,170,255,0.55);
       box-shadow:
-        0 0 14px rgba(255, 255, 255, 0.5),
-        0 0 34px rgba(255, 255, 255, 0.5);
-      outline: 1px solid rgba(255, 255, 255, 0.7);
+        0 0 14px rgba(205,170,255,0.75),
+        0 0 36px rgba(205,170,255,0.45);
+      outline: 1px solid rgba(220, 190, 255, 0.7);
     }
     .hs-diary .hs-halo{
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(220, 190, 255, 0.7);
       box-shadow:
-        0 0 22px rgba(255, 255, 255, 0.5),
-        0 0 56px rgba(255, 255, 255, 0.5);
+        0 0 22px rgba(205,170,255,0.7),
+        0 0 56px rgba(205,170,255,0.45);
       animation: haloLav 3.0s ease-in-out infinite;
     }
     @keyframes haloLav{
@@ -221,14 +232,17 @@
       100% { opacity: 0.18; transform: translate(-50%,-50%) scale(0.9); }
     }
 
-    /* ===== Constellation Mode (all art shimmer at once) ===== */
-    body.constellation .hs-art{
+    /* ===== Constellation Mode (art + memories shimmer at once) ===== */
+    body.constellation .hs-art,
+    body.constellation .hs-memory{
       filter: drop-shadow(0 0 16px rgba(255, 220, 170, 0.8));
     }
-    body.constellation .hs-art .hs-dot{
+    body.constellation .hs-art .hs-dot,
+    body.constellation .hs-memory .hs-dot{
       animation: twinkle 1.4s ease-in-out infinite;
     }
-    body.constellation .hs-art .hs-halo{
+    body.constellation .hs-art .hs-halo,
+    body.constellation .hs-memory .hs-halo{
       animation: haloSoft 2.8s ease-in-out infinite, shimmer 1.6s linear infinite;
     }
     @keyframes twinkle{
@@ -241,7 +255,7 @@
       100% { filter: brightness(1); }
     }
 
-    /* Popover */
+    /* ===== Popover ===== */
     #popover{
       position: fixed;
       z-index: 20000;
@@ -791,127 +805,13 @@ Anannya enjoying the traditions and delicious sweets at her friend’s daughter�
   }
 ];
 
-  // ===== Popover =====
-  const pop      = document.getElementById("popover");
-  const popTitle = document.getElementById("popTitle");
-  const popMeta  = document.getElementById("popMeta");
-  const popText  = document.getElementById("popText");
-  const popMedia = document.getElementById("popMedia");
-  const popClose = document.getElementById("popClose");
-
-  let closeTimer = null;
-  let popLocked = false;
-  let currentHotspot = null;
-
-  function cancelClose(){ clearTimeout(closeTimer); }
-  function scheduleClose(){
-    clearTimeout(closeTimer);
-    if (popLocked) return;
-    closeTimer = setTimeout(() => pop.style.display = "none", 160);
-  }
-
-  function closePopover(){
-    popLocked = false;
-    currentHotspot = null;
-    pop.style.display = "none";
-    const v = pop.querySelector("video");
-    if (v) { try { v.pause(); } catch(e){} v.src = ""; }
-  }
-
-  popClose.addEventListener("click", closePopover);
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closePopover();
-    if (e.key.toLowerCase() === "c") document.body.classList.toggle("constellation"); // ✨ constellation mode
-  });
-
-  function positionPopover(evt){
-    const pad = 14;
-    const w = pop.offsetWidth || 380;
-    const h = pop.offsetHeight || 520;
-    let x = evt.clientX + pad;
-    let y = evt.clientY + pad;
-    if (x > window.innerWidth - w - 10) x = evt.clientX - w - pad;
-    if (y > window.innerHeight - h - 10) y = evt.clientY - h - pad;
-    pop.style.left = Math.max(10, x) + "px";
-    pop.style.top  = Math.max(10, y) + "px";
-  }
-
-  function isVideoHotspot(h){
-    if (h.type === "video") return true;
-    if (h.link && /\.mp4(\?|#|$)/i.test(h.link)) return true;
-    return false;
-  }
-
-  function isExternalLinkOnly(h){
-    // Flipbooks / Google Drive "view" links (not direct MP4) can't be embedded reliably
-    if (!h.link) return false;
-    if (isVideoHotspot(h)) return false;
-    return true;
-  }
-
-  function renderMediaForHotspot(h){
-    const videoMode = isVideoHotspot(h);
-
-    // Clear click handler each time
-    popMedia.onclick = null;
-
-    if (!videoMode) {
-      popMedia.innerHTML = `<img id="popImg" alt="">`;
-      const img = popMedia.querySelector("#popImg");
-      img.src = h.image || "";
-      img.alt = h.title || "";
-      // If it’s a flipbook / external, click opens new tab
-      if (isExternalLinkOnly(h)) {
-        popMedia.onclick = () => window.open(h.link, "_blank", "noopener,noreferrer");
-      }
-      return;
-    }
-
-    // Video: show thumbnail first, click swaps to video (if MP4 direct), otherwise open link
-    const thumb = h.image || "";
-    const src = h.link || "";
-
-    popMedia.innerHTML = `
-      <div style="position:relative;width:100%;height:100%;">
-        <img alt="" style="width:100%;height:100%;object-fit:contain;" src="${thumb}">
-        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;">
-          <div style="
-            width:64px;height:64px;border-radius:20px;
-            background: rgba(20,35,60,0.55);
-            border: 1px solid rgba(150,210,255,0.35);
-            box-shadow: 0 18px 60px rgba(0,0,0,0.45);
-            display:flex;align-items:center;justify-content:center;
-            font-size:28px; color:#fff;
-          ">▶</div>
-        </div>
-      </div>
-    `;
-
-    popMedia.onclick = () => {
-      popLocked = true; // ✅ stick open once user clicks
-      // Only embed if it's a direct mp4. Google Drive "view" won't play in <video>.
-      if (!/\.mp4(\?|#|$)/i.test(src)) {
-        window.open(src, "_blank", "noopener,noreferrer");
-        return;
-      }
-      popMedia.innerHTML = `
-        <video controls autoplay playsinline style="width:100%;height:100%;object-fit:contain;background:#0b0b0f">
-          <source src="${src}" type="video/mp4">
-        </video>
-      `;
-    };
-  }
-
   function openPopover(h, evt, lock=false){
     currentHotspot = h;
     popLocked = !!lock;
-
     popTitle.textContent = h.title || "";
     popMeta.textContent  = [h.date, h.place].filter(Boolean).join(" • ");
     popText.textContent  = h.text || "";
-
     renderMediaForHotspot(h);
-
     pop.style.display = "block";
     positionPopover(evt);
   }
@@ -937,10 +837,10 @@ Anannya enjoying the traditions and delicious sweets at her friend’s daughter�
     const wrap = document.createElement("div");
     wrap.className = "hs-wrap";
 
-    // ✅ color/glow by type
-    if (h.type === "art")   wrap.classList.add("hs-art");
-    if (h.type === "video") wrap.classList.add("hs-video");
-    if (h.type === "diary") wrap.classList.add("hs-diary");
+    if (h.type === "art")    wrap.classList.add("hs-art");
+    if (h.type === "video")  wrap.classList.add("hs-video");
+    if (h.type === "diary")  wrap.classList.add("hs-diary");
+    if (h.type === "memory") wrap.classList.add("hs-memory");
 
     const halo = document.createElement("div");
     halo.className = "hs-halo";
@@ -954,16 +854,10 @@ Anannya enjoying the traditions and delicious sweets at her friend’s daughter�
     hit.className = "hs-hit";
     wrap.appendChild(hit);
 
-    // Hover behavior (don’t auto-close if locked)
     hit.addEventListener("mouseenter", (e) => { cancelClose(); openPopover(h, e, false); });
     hit.addEventListener("mousemove",  (e) => { if(pop.style.display === "block") positionPopover(e); });
     hit.addEventListener("mouseleave", scheduleClose);
-
-    // Click locks popover
-    hit.addEventListener("click", (e) => {
-      cancelClose();
-      openPopover(h, e, true);
-    });
+    hit.addEventListener("click", (e) => { cancelClose(); openPopover(h, e, true); });
 
     const rect = new OpenSeadragon.Rect(h.x - h.w/2, h.y - h.h/2, h.w, h.h);
     viewer.addOverlay({ element: wrap, location: rect });
@@ -973,6 +867,7 @@ Anannya enjoying the traditions and delicious sweets at her friend’s daughter�
     viewer.viewport.goHome(true);
     viewer.viewport.applyConstraints(true);
     HOTSPOTS.forEach(addHotspot);
+    setTimeout(showHelpersOnce, 450);  // ✅ show helpers after overlays exist
   });
 
   viewer.addHandler("open-failed", (e) => {
@@ -980,106 +875,84 @@ Anannya enjoying the traditions and delicious sweets at her friend’s daughter�
     alert("DZI open failed. Check mosaic_4275.dzi is in the same folder as index.html");
   });
 
-  // Optional: click anywhere empty to unlock/close
-  viewer.addHandler("canvas-click", (e) => {
-    // If you want click on canvas to close popover, uncomment:
-    // closePopover();
-  });
-// ===== First-load Helper Bubbles =====
-const helperLayer = document.getElementById("helperLayer");
-const helperDismiss = document.getElementById("helperDismiss");
+  // ===== First-load Helper Bubbles =====
+  const helperLayer = document.getElementById("helperLayer");
+  const helperDismiss = document.getElementById("helperDismiss");
 
-function findFirstOfType(type){
-  return HOTSPOTS.find(h => h.type === type) || null;
-}
-
-function viewportPointForHotspot(h){
-  // same rect center you used for overlays
-  const p = new OpenSeadragon.Point(h.x, h.y);
-  // convert image coord -> viewer element pixel
-  return viewer.viewport.pixelFromPoint(p, true);
-}
-
-function placeBubble(el, pt, dx=18, dy=-10){
-  // pt is in viewer element pixel coords; convert to window coords
-  const osdEl = document.getElementById("osd");
-  const r = osdEl.getBoundingClientRect();
-  const x = r.left + pt.x + dx;
-  const y = r.top  + pt.y + dy;
-  el.style.left = `${Math.max(10, Math.min(window.innerWidth - 280, x))}px`;
-  el.style.top  = `${Math.max(10, Math.min(window.innerHeight - 160, y))}px`;
-}
-
-function showHelpersOnce(){
-  const seen = localStorage.removeItem("mosaic_helpers_seen");
-  if (seen === "1") return;
-
-  const vid = findFirstOfType("video");
-  const dia = findFirstOfType("diary");
-  const art = findFirstOfType("art");
-
-  // If nothing typed yet, don't show
-  if (!vid && !dia && !art) return;
-
-  helperLayer.style.display = "block";
-
-  // Position bubbles on the currently visible view (home view)
-  if (vid){
-    const pt = viewportPointForHotspot(vid);
-    placeBubble(document.getElementById("hbVideo"), pt, 24, -10);
-    document.getElementById("hbVideo").classList.add("show");
-  }
-  if (dia){
-    const pt = viewportPointForHotspot(dia);
-    placeBubble(document.getElementById("hbDiary"), pt, 24, -10);
-    document.getElementById("hbDiary").classList.add("show");
-  }
-  if (art){
-    const pt = viewportPointForHotspot(art);
-    placeBubble(document.getElementById("hbArt"), pt, 24, -10);
-    document.getElementById("hbArt").classList.add("show");
+  function findFirstOfType(type){
+    return HOTSPOTS.find(h => h.type === type) || null;
   }
 
-  // Auto-hide after a moment (still dismissable)
-  const auto = setTimeout(() => {
-    hideHelpers(true);
-  }, 6500);
-
-  function hideHelpers(markSeen){
-    clearTimeout(auto);
-    helperLayer.style.display = "none";
-    document.getElementById("hbVideo").classList.remove("show");
-    document.getElementById("hbDiary").classList.remove("show");
-    document.getElementById("hbArt").classList.remove("show");
-    if (markSeen) localStorage.setItem("mosaic_helpers_seen", "1");
+  function viewportPointForHotspot(h){
+    const p = new OpenSeadragon.Point(h.x, h.y);
+    return viewer.viewport.pixelFromPoint(p, true);
   }
 
-  helperDismiss.onclick = () => hideHelpers(true);
+  function placeBubble(el, pt, dx=18, dy=-10){
+    const osdEl = document.getElementById("osd");
+    const r = osdEl.getBoundingClientRect();
+    const x = r.left + pt.x + dx;
+    const y = r.top  + pt.y + dy;
+    el.style.left = `${Math.max(10, Math.min(window.innerWidth - 280, x))}px`;
+    el.style.top  = `${Math.max(10, Math.min(window.innerHeight - 160, y))}px`;
+  }
 
-  // Reposition on resize (while visible)
-  const onResize = () => {
-    if (helperLayer.style.display !== "block") return;
-    if (vid) placeBubble(document.getElementById("hbVideo"), viewportPointForHotspot(vid), 24, -10);
-    if (dia) placeBubble(document.getElementById("hbDiary"), viewportPointForHotspot(dia), 24, -10);
-    if (art) placeBubble(document.getElementById("hbArt"), viewportPointForHotspot(art), 24, -10);
-  };
-  window.addEventListener("resize", onResize, { passive: true });
+  function showHelpersOnce(){
+    const seen = localStorage.getItem("mosaic_helpers_seen");  // ✅ FIX
+    if (seen === "1") return;
 
-  // Also reposition if user zooms/pans while the helper is still up
-  const onAnim = () => onResize();
-  viewer.addHandler("animation", onAnim);
-  viewer.addHandler("zoom", onAnim);
-  viewer.addHandler("pan", onAnim);
-}
+    const vid = findFirstOfType("video");
+    const dia = findFirstOfType("diary");
+    const mem = findFirstOfType("memory") || findFirstOfType("art");
 
-// Show after the DZI is open and home view applied
-viewer.addHandler("open", () => {
-  // slight delay so overlays settle
-  setTimeout(showHelpersOnce, 400);
-});
+    if (!vid && !dia && !mem) return;
 
-// OPTIONAL: reset helpers for testing
-// localStorage.removeItem("mosaic_helpers_seen");
+    helperLayer.style.display = "block";
+
+    if (vid){
+      const pt = viewportPointForHotspot(vid);
+      placeBubble(document.getElementById("hbVideo"), pt, 24, -10);
+      document.getElementById("hbVideo").classList.add("show");
+    }
+    if (dia){
+      const pt = viewportPointForHotspot(dia);
+      placeBubble(document.getElementById("hbDiary"), pt, 24, -10);
+      document.getElementById("hbDiary").classList.add("show");
+    }
+    if (mem){
+      const pt = viewportPointForHotspot(mem);
+      placeBubble(document.getElementById("hbMem"), pt, 24, -10);
+      document.getElementById("hbMem").classList.add("show");
+    }
+
+    const auto = setTimeout(() => hideHelpers(true), 6500);
+
+    function hideHelpers(markSeen){
+      clearTimeout(auto);
+      helperLayer.style.display = "none";
+      document.getElementById("hbVideo").classList.remove("show");
+      document.getElementById("hbDiary").classList.remove("show");
+      document.getElementById("hbMem").classList.remove("show");
+      if (markSeen) localStorage.setItem("mosaic_helpers_seen", "1");
+    }
+
+    helperDismiss.onclick = () => hideHelpers(true);
+
+    const onReposition = () => {
+      if (helperLayer.style.display !== "block") return;
+      if (vid) placeBubble(document.getElementById("hbVideo"), viewportPointForHotspot(vid), 24, -10);
+      if (dia) placeBubble(document.getElementById("hbDiary"), viewportPointForHotspot(dia), 24, -10);
+      if (mem) placeBubble(document.getElementById("hbMem"),  viewportPointForHotspot(mem), 24, -10);
+    };
+
+    window.addEventListener("resize", onReposition, { passive: true });
+    viewer.addHandler("animation", onReposition);
+    viewer.addHandler("zoom", onReposition);
+    viewer.addHandler("pan", onReposition);
+  }
+
+  // OPTIONAL: reset helpers for testing (uncomment once, refresh, then re-comment)
+  // localStorage.removeItem("mosaic_helpers_seen");
 </script>
 
 </body>
