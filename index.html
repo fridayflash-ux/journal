@@ -1011,7 +1011,7 @@ function placeBubble(el, pt, dx=18, dy=-10){
 }
 
 function showHelpersOnce(){
-  const seen = localStorage.getItem("mosaic_helpers_seen");
+  const seen = localStorage.removeItem("mosaic_helpers_seen");
   if (seen === "1") return;
 
   const vid = findFirstOfType("video");
